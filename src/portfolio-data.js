@@ -306,3 +306,45 @@ export const interests = [
     icon: Code,
   },
 ];
+
+export const journeyChapters = [
+  {
+    "id": "data",
+    "projectId": "cross-regulatory-safety",
+    "label": "01 / DATA",
+    "short": "Data",
+    "title": "Making fragmented data usable.",
+    "body": "I organize public safety-reporting data into a traceable analytical foundation, with source-specific definitions, quality checks, and reproducible preparation steps.",
+    "boundary": "Reporting patterns are not incidence or causal conclusions.",
+    "action": "View the data workflow"
+  },
+  {
+    "id": "modeling",
+    "projectId": "vaccine-modeling",
+    "label": "02 / MODELING",
+    "short": "Models",
+    "title": "Choosing models that answer the question.",
+    "body": "I frame outcomes, explore predictors, and compare modeling approaches, keeping predictive performance separate from statistical interpretation.",
+    "boundary": "Iterative analysis. Assumptions, uncertainty and professional review remain explicit.",
+    "action": "Explore the modeling approach"
+  },
+  {
+    "id": "tools",
+    "projectId": "clinical-sdv",
+    "label": "03 / TOOLS",
+    "short": "Tools",
+    "title": "Building tools that support review.",
+    "body": "I turn source-document review requirements into a usable workflow for extraction, consistency checks, and reviewer feedback.",
+    "boundary": "Pilot / UAT. CRA colleagues define the review requirements; final judgment remains with reviewers.",
+    "action": "Explore the review workflow"
+  },
+  {
+    "id": "path",
+    "label": "04 / MY PATH",
+    "short": "My path",
+    "title": "Different disciplines, one way of working.",
+    "body": "My path connects questions about people, training in biostatistics, and the practical demands of international pharmacovigilance. I\u2019m building toward deeper work in safety-data interpretation and signal analysis.",
+    "boundary": "Rutgers \u2192 Clinical research & medical NLP \u2192 Miami \u2192 International PV. Signal analysis is a future direction.",
+    "action": "Read my background"
+  }
+];

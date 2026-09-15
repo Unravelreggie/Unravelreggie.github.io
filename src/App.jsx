@@ -3,6 +3,7 @@ import { ArrowRight, ArrowDown, DownloadSimple, GithubLogo, LinkedinLogo, List, 
 import { translateContent, translateText } from "./site-language.js";
 import { projects, methods, experiences, earlierFoundations, interests } from "./portfolio-data.js";
 import Journey from "./Journey.jsx";
+import PortfolioScene from "./PortfolioScene.jsx";
 
 const covers = {
   "cross-regulatory-safety": { title:["Multi-source safety data","多来源安全数据"], image:"data-streams.webp", line:["Data foundation · Ongoing analysis","数据基础 · 持续分析"], link:"https://github.com/Unravelreggie/vaers-prototype" },
@@ -10,26 +11,6 @@ const covers = {
   "clinical-sdv": { title:["SDV review workflows","SDV 核查工作流"], image:"review-workflow.webp", line:["AI-assisted development · Pilot / UAT","AI 辅助开发 · 试点 / 用户验收"] }
 };
 const featuredIds = ["cross-regulatory-safety", "vaccine-modeling", "clinical-sdv"];
-const clamp = (v,a=0,b=1) => Math.max(a,Math.min(b,v));
-
-function useDepth(root, enabled) {
-  useEffect(() => {
-    const media = matchMedia("(prefers-reduced-motion: reduce)");
-    let frame=0;
-    const update=()=>{
-      frame=0;
-      if(!root.current)return;
-      const rect=root.current.getBoundingClientRect();
-      const amount=enabled&&!media.matches?clamp(-rect.top/Math.max(rect.height,1),-.2,1):0;
-      root.current.style.setProperty("--travel", amount);
-      root.current.dataset.depth = enabled&&!media.matches?"on":"off";
-    };
-    const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
-    update(); addEventListener("scroll",schedule,{passive:true}); addEventListener("resize",schedule); media.addEventListener("change",schedule);
-    return()=>{cancelAnimationFrame(frame);removeEventListener("scroll",schedule);removeEventListener("resize",schedule);media.removeEventListener("change",schedule);};
-  },[root,enabled]);
-}
-
 function ProjectDialog({project,language,onClose}) {
   const ref=useRef(null);
   const onCloseRef=useRef(onClose); onCloseRef.current=onClose;
@@ -69,7 +50,7 @@ export function App() {
   const [menu,setMenu]=useState(false);
   const [selectedId,setSelectedId]=useState(null);
   const [motion,setMotion]=useState(true);
-  const hero=useRef(null);
+  const hero=useRef(null),sceneControl=useRef(null);
   const l=language==="zh"?1:0;
   const pick=(en,zh)=>l?zh:en;
   const t=x=>translateText(x,language);
@@ -78,13 +59,30 @@ export function App() {
   const methodContent=translateContent(methods,language);
   const personal=translateContent(interests,language);
   const cv="/assets/Xiaoyuan_Zhang_CV_2026_"+(l?"ZH":"EN")+".pdf?v=20260915";
-  useDepth(hero,motion);
+  const startJourney=()=>{if(sceneControl.current?.serve)sceneControl.current.serve();else document.getElementById("constellation")?.scrollIntoView({behavior:!motion||matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});};
+  const toggleMotion=()=>{
+    const target=document.getElementById("constellation"),rect=target.getBoundingClientRect();
+    const inJourney=rect.top<innerHeight&&rect.bottom>88;
+    const stage=target.querySelector(".journey-scene");
+    const articles=[...target.querySelectorAll(".journey-transcript article")];
+    const chapter=articles.length?Math.max(0,articles.findIndex(a=>a.getBoundingClientRect().bottom>100)):Number(stage.dataset.stage||0);
+    const enabling=!motion;
+    setMotion(enabling);
+    if(inJourney)requestAnimationFrame(()=>{
+      const cards=target.querySelectorAll(".journey-transcript article");
+      if(cards.length)cards[chapter]?.scrollIntoView({behavior:"instant",block:"start"});
+      else {
+        const inset=parseFloat(getComputedStyle(stage).top)||0;
+        scrollTo({top:scrollY+target.getBoundingClientRect().top-inset+(target.offsetHeight-stage.offsetHeight)*(chapter+.1)/4,behavior:"instant"});
+      }
+    });
+  };
   useEffect(()=>{
     document.documentElement.lang=l?"zh-CN":"en";
     document.title=pick("Xiaoyuan Zhang — Biostatistics, Data & International PV","张潇远 — 生物统计、数据与国际药物警戒");
     try{localStorage.setItem("unravel-language",language);}catch{}
   },[language]);
-  const nav=[["work","Work","项目"],["capabilities","Approach","能力"],["experience","About","经历"],["constellation","My path","成长路径"]];
+  const nav=[["work","Work","项目"],["constellation","Journey","探索"],["experience","About","经历"],["contact","Contact","联系"]];
   const navigate=()=>setMenu(false);
   return <>
     <a className="skip-link" href="#main-content">{pick("Skip to content","跳至正文")}</a>
@@ -95,19 +93,18 @@ export function App() {
       {menu&&<nav id="mobile-nav" className="mobile-nav" aria-label={pick("Mobile navigation","移动端导航")}>{nav.map(([id,en,zh])=><a key={id} href={"#"+id} onClick={navigate}>{pick(en,zh)}</a>)}<a href={cv} target="_blank" rel="noreferrer" onClick={navigate}>{pick("View CV","查看简历")}</a></nav>}
     </header>
     <main id="main-content">
-      <section id="top" className="hero" ref={hero}>
-        <div className="hero-world" aria-hidden="true"><div className="hero-camera"><img className="hero-room" src="/assets/daylight-room.webp" alt="" width="1800" height="1200" fetchPriority="high"/><img className="hero-streams" src="/assets/data-streams.webp" alt="" width="1400" height="950"/><div className="hero-annotation">{pick("A little curiosity.\nA clearer perspective.","保持好奇。\n看得更清楚。")}</div></div></div>
+      <section id="top" className="hero cinema-hero" ref={hero}>
+        <div className="hero-world" aria-hidden="true"><img className="terrace-backdrop" src="/assets/tennis-terrace.webp" alt="" width="1672" height="941" fetchPriority="high"/></div>
         <div className="hero-copy">
-          <p className="eyebrow">{pick("RESEARCH · DATA · REAL-WORLD PRACTICE","研究 · 数据 · 真实业务")}</p>
-          <h1>Xiaoyuan Zhang<span lang="zh-CN">张潇远</span></h1>
-          <h2>{l?<><span>从问题出发，</span><span>让证据清晰。</span></>:"Turning questions into evidence."}</h2>
-          <p className="hero-position">{pick("Biostatistics · International pharmacovigilance","生物统计 · 国际药物警戒")}</p>
-          <p className="hero-intro">{pick("I connect statistical thinking, data engineering and applied AI with the practical work of international drug safety.","我将统计思维、数据工程与 AI 应用，连接到国际药物安全的实际工作。")}</p>
-          <p className="credentials"><span>{pick("MSPH Biostatistics · University of Miami","迈阿密大学 · MSPH 生物统计")}</span><span>{pick("International Pharmacovigilance · SINOVAC","SINOVAC 科兴 · 国际药物警戒")}</span></p>
-          <div className="hero-actions"><a className="button primary" href="#work"><span className="action-label-full">{pick("Explore selected work","查看代表项目")}</span><span className="action-label-short">{pick("Selected work","查看项目")}</span> <ArrowRight size={20}/></a><a className="button secondary" href={cv} target="_blank" rel="noreferrer">{pick("View CV","查看简历")} <DownloadSimple size={19}/></a></div>
-          <a className="text-link path-link" href="#constellation">{pick("My path","我的成长路径")} <ArrowDown size={17}/></a>
+          <p className="eyebrow">{pick("BIOSTATISTICS · APPLIED AI · INTERNATIONAL PHARMACOVIGILANCE","生物统计 · AI 应用 · 国际药物警戒")}</p>
+          <h1>{pick('Xiaoyuan “Reginald” Zhang',"张潇远 / Reginald")}</h1>
+          <h2>{l?<><span>从问题出发，</span><span>让证据清晰。</span></>:<>Turning questions<br/>into evidence.</>}</h2>
+          <p className="hero-intro">{pick("I bring statistical thinking, practical AI, and international drug-safety experience together to make complex work clearer and more usable.","我把统计思维、AI 应用与国际药物警戒实践结合起来，将复杂的问题转化为更清晰的分析和更可用的工具。")}</p>
+          <div className="hero-actions"><a className="button primary" href="#work">{pick("Explore my work","查看代表项目")}<ArrowRight size={18}/></a><a className="button secondary" href={cv} target="_blank" rel="noreferrer">{pick("View CV","查看简历")}<DownloadSimple size={18}/></a></div>
+          <p className="hero-credentials">{pick("MSPH Biostatistics · University of Miami  /  International PV · SINOVAC","迈阿密大学 MSPH 生物统计 / SINOVAC 科兴 · 国际 PV")}</p>
         </div>
-        <div className="hero-caption"><span>{pick("Conceptual illustration","概念示意图")}</span><button className="motion-toggle" aria-pressed={motion} onClick={()=>setMotion(!motion)}>{pick(motion?"Motion on":"Motion off",motion?"动效开启":"动效关闭")}</button></div>
+        <button className="tennis-start" onClick={startJourney} aria-label={pick("Hit the tennis ball and explore the projects","击出网球，探索项目")}><span className="ball-hit-target"/><span className="ball-invitation">{pick("Give the ball a tap.","点一下网球，出发。")}<ArrowDown size={15}/></span></button>
+        <div className="hero-bottom"><button className="follow-invitation" onClick={startJourney}>{pick("Follow the ball. Discover the work.","跟着球，走进我的项目。")}<ArrowDown size={17}/></button><button className="motion-toggle" aria-pressed={motion} onClick={toggleMotion}>{pick(motion?"Motion on":"Motion off",motion?"动效开启":"动效关闭")}</button></div>
       </section>
 
       <section id="work" className="selected-work section-wrap">
@@ -119,6 +116,8 @@ export function App() {
         <p className="art-note">{pick("Illustrations are conceptual. Project notes describe current roles, collaboration and validation status.","插图为概念示意。项目说明列出当前职责、协作方式与验证状态。")}</p>
         <details className="more-work"><summary>{pick("More work: MedDRA assistance & regulatory intelligence","更多项目：MedDRA 编码辅助与法规情报")}</summary><div className="secondary-projects">{content.filter(p=>!featuredIds.includes(p.id)).map(p=><article key={p.id}><h3>{p.title}</h3><p>{p.summary}</p><small>{p.role} · {p.maturity}</small><button className="text-link" onClick={()=>setSelectedId(p.id)}>{pick("Read project notes","查看项目说明")} <ArrowRight size={17}/></button></article>)}</div></details>
       </section>
+
+      <Journey language={language} motion={motion} paused={!!selectedId} onProject={setSelectedId} projects={content} cv={cv} onToggleMotion={toggleMotion}/>
 
       <section id="capabilities" className="approach section-wrap">
         <div className="section-head"><h2>{pick("How I work","我如何开展工作")}</h2><p>{pick("Three connected perspectives.","三种相互支撑的视角。")}</p></div>
@@ -137,7 +136,6 @@ export function App() {
         </div>
       </section>
 
-      <Journey language={language} motion={motion}/>
 
       <section id="experience" className="experience section-wrap">
         <div className="section-head"><h2>{pick("A path across disciplines","跨学科的成长路径")}</h2><a href={cv} className="text-link" target="_blank" rel="noreferrer">{pick("Full CV","完整简历")} <ArrowRight size={18}/></a></div>
@@ -154,8 +152,9 @@ export function App() {
 
       <section id="off-hours" className="off-hours section-wrap"><div className="section-head"><h2>{pick("Beyond the work","工作之外")}</h2><p>{pick("Still learning. Still curious.","保持好奇，也保持生活的热度。")}</p></div><div className="personal-grid">{personal.map(item=>{const Icon=item.icon;return <article key={item.id}><Icon size={25} weight="light"/><h3>{item.title}</h3><p>{item.body}</p></article>;})}</div></section>
 
-      <footer id="contact" className="site-footer section-wrap"><div><a className="wordmark" href="#top"><strong>UNRAVEL</strong><span>Xiaoyuan Zhang · 张潇远</span></a><p>{pick("Curiosity, in good company.","让好奇心，遇见同行者。")}</p></div><div className="footer-links"><a href="mailto:reggiezhang9719@gmail.com">Email <ArrowRight size={17}/></a><a href="https://github.com/Unravelreggie" target="_blank" rel="noreferrer">GitHub <GithubLogo size={19}/></a><a href="https://www.linkedin.com/in/xiaoyuan-zhang-4a4999352" target="_blank" rel="noreferrer">LinkedIn <LinkedinLogo size={19}/></a><a href={cv} target="_blank" rel="noreferrer">{pick("View CV","查看简历")} <DownloadSimple size={18}/></a></div><p className="footer-note">© 2026 Xiaoyuan Zhang <a href="https://github.com/Unravelreggie/Unravelreggie.github.io" target="_blank" rel="noreferrer">{pick("Website source","网站源码")}</a></p></footer>
+      <footer id="contact" className="site-footer section-wrap"><div><a className="wordmark" href="#top"><strong>UNRAVEL</strong><span>Xiaoyuan Zhang · 张潇远</span></a><p>{pick("Good questions are a good place to start.","好的问题，值得一起聊聊。")}</p></div><div className="footer-links"><a href="mailto:reggiezhang9719@gmail.com">Email <ArrowRight size={17}/></a><a href="https://github.com/Unravelreggie" target="_blank" rel="noreferrer">GitHub <GithubLogo size={19}/></a><a href="https://www.linkedin.com/in/xiaoyuan-zhang-4a4999352" target="_blank" rel="noreferrer">LinkedIn <LinkedinLogo size={19}/></a><a href={cv} target="_blank" rel="noreferrer">{pick("View CV","查看简历")} <DownloadSimple size={18}/></a></div><p className="footer-note">© 2026 Xiaoyuan Zhang <a href="https://github.com/Unravelreggie/Unravelreggie.github.io" target="_blank" rel="noreferrer">{pick("Website source","网站源码")}</a></p></footer>
     </main>
+    <PortfolioScene motion={motion} paused={!!selectedId} controllerRef={sceneControl}/>
     <ProjectDialog project={content.find(p=>p.id===selectedId)} language={language} onClose={()=>setSelectedId(null)}/>
   </>;
 }

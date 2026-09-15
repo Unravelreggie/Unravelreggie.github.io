@@ -10,7 +10,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 ## Durable design direction
 
-- The user selected the first daylight design on 2026-09-15: white and pale sage, evergreen text, airy blue/green analytical imagery, sunny window light and a restrained plant background. The previous dark archival/ember-red direction was explicitly rejected.
+- Current selected direction (2026-09-15): an optimistic continuous studio/terrace/tennis environment with a cream Golden Retriever and a black-and-white pied French Bulldog. Warm white, pine green and sage; yellow-green tennis interaction. The user accepts free/self-made 3D character assets and iterative visual refinement. The dark archival/ember-red direction remains rejected.
 - Lead with Xiaoyuan Zhang and current experience in biostatistics, international pharmacovigilance, data engineering and applied AI. Computational psychiatry, HDDM/HSSM, fMRI and ECG support the research background.
 - Current international pharmacovigilance work is a visible professional foundation. Signal analysis and drug safety data analytics are future expansion goals, not current job titles or claims of established specialist status.
 - GCP and GVP should visibly communicate evidence quality across the clinical-to-post-market lifecycle.
@@ -24,7 +24,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - The name, professional positioning and primary actions must remain readable without horizontal overflow at 319–430 px viewport widths. UNRAVEL is a small brand mark, not the hero title.
 - Keep the landing screen direct and readable: identity, current positioning and primary actions come first. Selected projects immediately follow the hero. Preserve the selected light editorial layout and avoid theatrical labels.
 - Simplified Chinese copy must read as native professional writing that preserves the English meaning; prefer natural sentence rhythm and context over literal word-for-word translation.
-- Treat the Current Projects chapter as a data-science portfolio, not an IT/DevOps portfolio. The five active systems are multi-vaccine clinical modeling and inference, cross-regulatory post-market safety data and signal analytics, multilingual MedDRA coding assistance with PV operations data, international GVP regulatory intelligence, and clinical SDV consistency review.
+- Treat the Current Projects chapter as a data-science portfolio, not an IT/DevOps portfolio. The five active systems are multi-vaccine clinical modeling and inference, cross-regulatory post-market safety data foundations and descriptive analysis, multilingual MedDRA coding assistance with PV operations data, international GVP regulatory intelligence, and clinical SDV consistency review.
 - Make project ownership explicit: Primary Analyst for vaccine modeling; Primary Data Developer & Analyst for the ADR foundation; co-developer with the programming lead for MedDRA/PV data; independent analyst for GVP intelligence; and end-to-end developer working from CRA requirements for SDV.
 - Public project copy must omit supplier names, specific vaccine types or products, internal project codes, private timelines and infrastructure, patient-level data, confidential metrics, and unpublished findings. Spontaneous-reporting patterns must never be described as incidence or causality.
 - MedDRA functionality is coding assistance in English, Chinese, and Japanese: it ranks PT/LLT candidates for qualified human confirmation and must not be described as autonomous coding. Do not expose licensed terminology content or physician narratives.
@@ -36,11 +36,17 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Bayesian, ML, and longitudinal methods demonstrate statistical competence; explain methodological choices, validation, interpretation and limitations.
 - Distinguish AI-assisted development from LLM capabilities implemented inside applications.
 - Include RWE database construction, technology integration, Feishu workflow automation, overseas audit, vendor management, regulation interpretation and PVA/SDEA signing coordination with accurate ownership.
-- The constellation must follow native page scroll: individual stars illuminate, connections grow, and the camera moves into the next layer. Reverse scrolling reverses the journey.
-- Use real CSS perspective and 3D depth transforms linked to native scrolling. Background, analytical imagery and annotations move at different depths. Story nodes illuminate before progressing to the next layer; reverse scrolling reverses the journey. Keep stable reading pauses, direct project/CV links, a skip action, and a full static reduced-motion alternative.
+- Preserve #constellation as the Journey anchor: four tennis-ball project stops, native scroll, stable reading holds and reversible camera movement. Three project chapters precede a fourth personal-path chapter.
+- Use actual articulated 3D actors and ball with a layered 2D environment; do not describe a moving poster as interactive 3D characters. Keep Work/CV immediately accessible, optional keyboard/click serve, fast seek, reverse scroll, pause on detail and full mobile/static/reduced-motion reading.
 - All personal source development and Git operations take place on Mac mini. This repository is the public website source; Unravelreggie/Unravelreggie holds the profile README.
 
 ## Selected visual reference and current priority
 - Selected displayed option 1: generated image exec-e1026aff-9f37-417f-ad24-ff6105f5d653.png. Do not use the concept name Daylight Research Studio as the personal brand.
 - User clarification: the headline must not claim pharmacovigilance signal/safety analytics as an established current specialty. Place it in Looking Ahead and state the aspiration explicitly.
 - Conceptual graphics must be labeled; do not invent personal portraits, research results, business metrics or company logos.
+
+## Director implementation constraints
+- Current original mesh actors are a first self-made visual iteration; do not claim film-grade fur or final character polish. Preserve independent gaze/jaw/limb control and breed differences. Do not assign the scene dogs real pet names without confirmation.
+- Existing project IDs and portfolio-data.js are shared by cards, story and details; preserve mature-state and ownership boundaries.
+- One scene and one native scroll mapping; fixed reading panels do not fly with the camera. Pause and avoid continuous rendering offscreen/static.
+- Keep Cloudflare deferred. Website source and publication use the existing GitHub repositories and branch workflow.

@@ -1,0 +1,77 @@
+/* One photographic environment, articulated 3D actors, stable HTML reading planes. */
+:root{--ink:#172a25;--green:#285840;--muted:#53645b;--sage:#f1f3e9;background:#f5f3eb}
+.site-header{background:#f8f7f0f5;border-bottom:1px solid #e0e4d6}
+.portfolio-canvas{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.portfolio-canvas canvas{display:block;width:100%;height:100%}
+.cinema-hero{isolation:auto;min-height:720px;height:calc(100svh - 88px);max-height:1060px;padding:32px 4.5vw 65px;background:#cad8c4}
+.cinema-hero .hero-world{z-index:0;perspective:none;overflow:hidden}
+.terrace-backdrop{width:100%;height:100%;object-fit:cover;object-position:center 55%;max-width:none}
+.cinema-hero .hero-copy{z-index:3;width:min(610px,49vw);max-width:none;margin:0 auto;padding:25px 30px 21px;text-align:center;background:#f5f3ebea;border:1px solid #ffffff80;border-radius:10px;box-shadow:0 10px 60px #20382c0c;backdrop-filter:blur(10px)}
+.cinema-hero .eyebrow{font-size:9px;letter-spacing:.12em;color:#52644f}
+.cinema-hero h1{font-size:30px;margin:13px 0 12px;letter-spacing:-.015em;line-height:1.1}
+.cinema-hero h2{font-size:61px;line-height:.94;margin:0 0 18px;letter-spacing:-.03em}
+.cinema-hero .hero-intro{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.65;max-width:490px;margin:0 auto 19px;color:#445a4e}
+.cinema-hero .hero-actions{justify-content:center;gap:12px;flex-wrap:nowrap}
+.cinema-hero .button{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:13px;border-radius:5px;min-height:45px;padding:11px 16px;gap:12px}
+.hero-credentials{font-size:10px;line-height:1.6;color:#687568;margin-top:16px}
+.hero-bottom{position:absolute;bottom:0;left:0;right:0;height:56px;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:0 4.5vw;background:#f5f3ebed;border-top:1px solid #e1e6d6}
+.follow-invitation{display:flex;align-items:center;gap:13px;padding:8px 0;font-family:var(--serif);font-size:21px;font-style:italic}
+.hero-bottom .motion-toggle{border:1px solid #9caf9c;border-radius:4px;padding:8px 12px;font-size:11px;min-height:35px}
+.tennis-start{position:absolute;z-index:5;left:50%;top:77%;padding:0;width:155px;height:91px;transform:translate(-50%,-24px);display:flex;align-items:center;flex-direction:column;justify-content:flex-start}
+.ball-hit-target{display:block;width:64px;height:49px;flex-shrink:0}
+.ball-invitation{display:flex;align-items:center;gap:7px;font-family:var(--serif);font-size:17px;font-style:italic;white-space:nowrap;color:#183827;background:#f5f3ebe8;border-radius:5px;padding:7px 10px;box-shadow:0 3px 12px #173c3318}
+.tennis-start:hover .ball-invitation{background:#e5ecbe}
+html[data-scene=fallback] .tennis-start{display:none}
+.selected-work,.approach,.experience,.open-research,.next-chapter,.off-hours,.site-footer{position:relative;z-index:3}
+.selected-work,.experience,.off-hours{background:#f5f3eb}
+.selected-work{padding-top:50px}
+.featured-project{border-top:1px solid #cad6c8;padding-top:19px}
+.project-art{background:#edf1e9;border-radius:7px}
+.approach{background:#e9eee2}
+.director-journey{height:520svh;background:#dbe3d0}
+.director-journey .journey-scene{top:88px;height:calc(100svh - 88px);min-height:570px;max-height:1100px;padding:27px 4.5vw;overflow:hidden}
+.journey-environment{position:absolute;inset:0;background:url("/assets/tennis-terrace.webp") center 55%/cover no-repeat;opacity:.86;pointer-events:none}
+.director-journey .journey-top,.director-journey .journey-controls{position:relative;z-index:4;background:#f5f3ebec;padding:12px 17px;border-radius:5px}
+.director-journey .journey-top .eyebrow{color:#3b5844;font-size:10px;letter-spacing:.12em}
+.journey-reading{position:relative;z-index:4;flex:1;display:flex;align-items:center;width:min(530px,43%);margin:25px 0}
+.journey-reading article{background:#f5f3ebf5;border:1px solid #faffeb;border-radius:9px;padding:30px;box-shadow:0 12px 70px #10271915}
+.director-journey .journey-year{font-family:Arial,"Microsoft YaHei",sans-serif;font-style:normal;font-size:11px;letter-spacing:.16em;color:#66764e;margin-bottom:19px}
+.journey-reading h2{font-size:44px;line-height:1.02}
+.director-journey .journey-body{font-size:14px;line-height:1.75;margin:19px 0 15px}
+.journey-role{font-size:11px;line-height:1.7;font-weight:600;color:#316143;margin-bottom:12px}
+.journey-role span{font-weight:400}
+.journey-boundary{font-size:11px;line-height:1.65;color:#6b755f;border-top:1px solid #d9dfce;padding-top:12px;margin-bottom:19px}
+.director-journey .button{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:12px;padding:11px 14px;min-height:43px;gap:9px}
+.chapter-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.director-journey .journey-controls{padding:5px 17px}
+.director-journey .journey-controls nav{gap:20px}
+.director-journey .journey-controls button{font-size:12px;gap:8px;white-space:nowrap;padding:8px 2px;min-height:46px}
+.director-journey .journey-controls button span{font-family:var(--serif);font-size:20px;color:#7a885d}
+.director-journey .journey-controls button[aria-current]{color:#1e5939;border-bottom:2px solid #497544}
+.director-journey .journey-controls p{font-size:16px;display:flex;align-items:center;gap:7px}
+.director-journey.journey-static{height:auto}
+.director-journey.journey-static .journey-scene{height:auto;min-height:0;max-height:none;position:relative;top:0;background:#e9eee2}
+.journey-static .journey-environment{display:none}
+.director-journey .journey-transcript{gap:25px;margin:25px 0 0}
+.journey-transcript article{padding:27px;background:#f5f3eb;border:1px solid #dce3d2;border-radius:8px}
+.director-journey .journey-transcript h2{font-size:35px;line-height:1.12}
+html[lang=zh-CN] .cinema-hero h1{font-size:31px}
+html[lang=zh-CN] .cinema-hero h2{font-size:46px;line-height:1.18}
+html[lang=zh-CN] .cinema-hero .hero-intro{font-size:14px}
+html[lang=zh-CN] .journey-reading h2{font-size:35px;line-height:1.3}
+@media(min-width:1600px){.cinema-hero{padding-top:55px;min-height:800px}.cinema-hero .hero-copy{width:640px}.cinema-hero h2{font-size:68px}.cinema-hero h1{font-size:34px}.cinema-hero .hero-intro{font-size:16px}.journey-reading{width:560px}.journey-reading h2{font-size:48px}.director-journey .journey-body{font-size:16px}}
+@media(max-width:1100px) and (min-width:821px){.cinema-hero .hero-copy{width:53vw;padding:23px}.cinema-hero h2{font-size:52px}.cinema-hero h1{font-size:27px}.cinema-hero .eyebrow{font-size:8px}.journey-reading{width:47%}.journey-reading article{padding:24px}.journey-reading h2{font-size:37px}.director-journey .journey-body{font-size:13px}}
+@media(max-width:820px){.cinema-hero{height:830px;min-height:830px;max-height:none;padding:24px 22px 320px}.cinema-hero .hero-copy{width:min(530px,100%);padding:24px;background:#f5f3ebf2}.cinema-hero h1{font-size:29px}.cinema-hero h2{font-size:57px}.cinema-hero .hero-intro{font-size:14px}.cinema-hero .eyebrow{font-size:9px}.hero-bottom{padding:0 22px}.follow-invitation{font-size:17px}.hero-bottom .motion-toggle{font-size:10px;padding:7px 9px}.tennis-start{display:none}.director-journey .journey-scene{padding:25px 24px}.director-journey .journey-top{padding:0;background:none}.director-journey .journey-transcript{grid-template-columns:1fr 1fr}.director-journey .journey-transcript h2{font-size:32px}.director-journey .journey-body{font-size:14px}}
+@media(max-width:540px){.cinema-hero{padding:19px 17px 260px;height:790px;min-height:790px}.cinema-hero .hero-copy{padding:23px 18px 18px;border-radius:9px}.cinema-hero h1{font-size:26px;margin:12px 0}.cinema-hero h2{font-size:48px;margin-bottom:17px}.cinema-hero .eyebrow{font-size:8px;letter-spacing:.07em;line-height:1.7}.cinema-hero .hero-intro{font-size:13px;line-height:1.65}.cinema-hero .button{font-size:12px;min-height:45px;padding:10px 12px;gap:7px}.hero-credentials{font-size:9px;line-height:1.65;margin-top:15px}.hero-bottom{height:59px;padding:0 18px;gap:15px}.follow-invitation{font-size:15px;text-align:left;line-height:1.3;max-width:230px;gap:7px}.follow-invitation svg{flex-shrink:0}.hero-bottom .motion-toggle{flex-shrink:0}.director-journey .journey-scene{padding:25px 20px}.director-journey .journey-top{align-items:center;gap:17px}.director-journey .journey-top .eyebrow{font-size:9px;max-width:180px}.director-journey .journey-top .text-link{font-size:11px;gap:5px;white-space:nowrap}.director-journey .journey-transcript{grid-template-columns:1fr;gap:18px}.journey-transcript article{padding:25px 21px}.director-journey .journey-transcript h2{font-size:33px}.director-journey .journey-body{font-size:14px}.director-journey .journey-transcript .journey-year{font-size:10px}.hero-world .terrace-backdrop{object-position:62% center}html[lang=zh-CN] .cinema-hero h1{font-size:27px}html[lang=zh-CN] .cinema-hero h2{font-size:34px;line-height:1.3}html[lang=zh-CN] .cinema-hero .hero-intro{font-size:13px}html[lang=zh-CN] .cinema-hero .button{font-size:12px;min-height:45px}}
+@media(max-width:360px){.cinema-hero{padding-inline:13px;height:780px;min-height:780px}.cinema-hero .hero-copy{padding:21px 14px}.cinema-hero h1{font-size:23px}.cinema-hero h2{font-size:41px}.cinema-hero .hero-intro{font-size:12px}.cinema-hero .button{font-size:11px;padding:10px 11px;gap:7px}.cinema-hero .hero-actions{gap:8px}.hero-bottom{padding-inline:15px}.follow-invitation{font-size:14px}.director-journey .journey-top .text-link{font-size:10px}.director-journey .journey-top .eyebrow{max-width:147px;font-size:8px}}
+
+@media(min-width:821px) and (max-width:1599px){.cinema-hero{min-height:calc(100svh - 88px)}.cinema-hero .hero-copy{width:min(560px,47vw)}.cinema-hero h2{font-size:55px}.cinema-hero h1{font-size:28px}}
+
+@media(max-width:820px){.cinema-hero h2{font-size:48px}}
+@media(max-width:540px){.cinema-hero h2{font-size:39px}.cinema-hero .hero-copy{padding-top:20px}}
+@media(max-width:360px){.cinema-hero h2{font-size:34px}}
+.journey-concept{position:absolute;right:4.5vw;bottom:96px;font-size:10px;color:#43533f;background:#f5f3ebed;padding:6px 9px;border-radius:3px;z-index:4}
+
+.journey-top-actions{display:flex;align-items:center;gap:22px}
+.journey-mode{font-size:11px;min-height:36px;border:1px solid #9aad90;border-radius:4px;padding:7px 10px}
+@media(max-width:540px){.journey-top-actions{align-items:flex-end;gap:5px;flex-direction:column}.journey-mode{font-size:10px;padding:6px 8px;min-height:32px}.director-journey .journey-top .eyebrow{max-width:145px}}
