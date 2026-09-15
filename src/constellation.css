@@ -1,0 +1,46 @@
+
+.cosmos{position:relative;height:680svh;background:#080d0e;scroll-margin-top:86px;isolation:isolate}
+.cosmos-scene{position:sticky;top:86px;height:calc(100svh - 86px);min-height:540px;overflow:hidden;display:flex;flex-direction:column;padding:28px clamp(24px,5vw,78px);border-block:1px solid #26312f;background:radial-gradient(ellipse at 75% 50%,#232d292b,transparent 60%),radial-gradient(ellipse at 65% 45%,#a5532712,transparent 40%),#080d0e}
+.cosmos-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:url("/assets/evidence-paper-thread.webp");background-size:cover;opacity:.025;mix-blend-mode:screen}
+.cosmos-dust{position:absolute;inset:-30px 0;pointer-events:none}
+.cosmos-dust i{position:absolute;border-radius:50%;background:#ece7d7;box-shadow:0 0 5px #f8dfaa}
+.cosmos-topline{display:flex;justify-content:space-between;gap:20px;position:relative;font-family:"IBM Plex Mono",monospace;font-size:.61rem;line-height:1.5;letter-spacing:.08em;color:#a6aa9f}
+.cosmos-topline a{color:#d3bb9d;border-bottom:1px solid #695746;padding-bottom:4px}
+.cosmos-layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr);align-items:center;gap:30px;flex:1;position:relative;min-height:0}
+.cosmos-copy{max-width:470px;z-index:1}
+.cosmos-kicker{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.12em;line-height:1.8;color:#f59a74}
+.cosmos-copy h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(2.6rem,4.5vw,5rem);font-weight:400;line-height:1.01;margin:22px 0 26px;letter-spacing:-.035em}
+.cosmos-description{font-size:clamp(.95rem,1.25vw,1.15rem);line-height:1.85;color:#c4c4b8;max-width:440px}
+.cosmos-year{margin-top:34px;font-family:"IBM Plex Mono",monospace;font-size:.66rem;color:#aaa38e;letter-spacing:.1em}
+.cosmos-window{position:relative;min-width:0}
+.cosmos-window svg{display:block;width:100%;overflow:visible}
+.cosmos-orbit{stroke:#849889;stroke-width:.5;fill:none;opacity:.1}
+.cosmos-orbit--outer{stroke-dasharray:2 10;opacity:.18}
+.cosmos-thread{stroke:#e2a275;stroke-width:1;stroke-dasharray:1;fill:none;opacity:.75}
+.star-rays{stroke:#ffdfa5;stroke-width:.55;opacity:.7}
+.star text{fill:#e2dbc9;font-family:"IBM Plex Sans Condensed","Microsoft YaHei",sans-serif;font-size:15px;letter-spacing:.015em}
+.star:not(.is-lit) text{opacity:0}
+.cosmos-map-caption{text-align:center;font-size:.69rem;line-height:1.7;color:#a8aa9a;margin:12px 0}
+.cosmos-memory{position:absolute;top:2%;right:0;display:flex;gap:16px;color:#ad9b6d;font-size:9px;opacity:.5}
+.cosmos-bottom{position:relative;display:flex;align-items:end;justify-content:space-between;gap:24px}
+.cosmos-bottom nav{display:flex;gap:10px}
+.cosmos-bottom button{position:relative;width:48px;height:35px;display:grid;place-items:start center;padding:0;border:0;border-bottom:1px solid #384038;background:transparent;cursor:pointer;color:#899488;font-family:"IBM Plex Mono",monospace;font-size:.65rem}
+.cosmos-bottom button i{position:absolute;bottom:-1px;width:100%;height:2px;background:#ed996e;transform-origin:left}
+.cosmos-bottom button[aria-current]{color:#f8c59b}
+.cosmos-scroll-hint{font-family:"IBM Plex Mono",monospace;font-size:.57rem;line-height:1.7;letter-spacing:.08em;color:#929a8c}
+.cosmos-transcript{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html[lang="zh-CN"] .cosmos-copy h2{font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:clamp(2.1rem,3.5vw,3.6rem);line-height:1.25}
+.cosmos--compact{height:auto}
+.cosmos--compact .cosmos-scene{display:none}
+.cosmos--compact .cosmos-transcript{position:static;clip-path:none;width:auto;height:auto;overflow:visible;white-space:normal;padding:70px 24px;max-width:900px;margin:auto}
+.cosmos-transcript h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:2.7rem;font-weight:400}
+.cosmos-transcript article{border-left:1px solid #665241;padding:20px 0 45px 25px;position:relative}
+.cosmos-transcript article:before{content:"✦";position:absolute;left:-9px;top:17px;font-size:19px;color:#e9ad79;background:#080d0e}
+.cosmos-transcript h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.9rem;font-weight:500;line-height:1.2}
+.cosmos-transcript p{color:#c0c3b6;line-height:1.8}
+.cosmos-transcript article div{display:flex;flex-wrap:wrap;gap:12px;color:#e0b98b;font-size:.8rem}
+@media(max-width:820px),(max-height:600px),(prefers-reduced-motion:reduce){
+ .cosmos{height:auto}
+ .cosmos-scene{display:none}
+ .cosmos-transcript{position:static;clip-path:none;width:auto;height:auto;overflow:visible;white-space:normal;padding:65px 24px;max-width:900px;margin:auto}
+}
