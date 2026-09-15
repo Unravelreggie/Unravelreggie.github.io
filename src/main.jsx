@@ -1,10 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.jsx";
-import "./styles.css";
-import "./portfolio.css";
+import "./daylight.css";
 
-document.documentElement.dataset.build = "2026-09-15-story";
+document.documentElement.dataset.build = "2026-09-15-daylight";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>

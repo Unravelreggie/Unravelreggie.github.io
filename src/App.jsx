@@ -1,947 +1,161 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowRight,
-  Barbell,
-  Brain,
-  Briefcase,
-  Buildings,
-  ChartLineUp,
-  CheckCircle,
-  Code,
-  Database,
-  Dog,
-  FileText,
-  GithubLogo,
-  LinkedinLogo,
-  List,
-  MagnifyingGlass,
-  PersonSimpleSwim,
-  ShieldCheck,
-  TennisBall,
-  X,
-} from "@phosphor-icons/react";
-import { siteTitle, translateContent, translateText } from "./site-language.js";
-import OpenResearch, { CapabilityTags } from "./OpenResearch.jsx";
-import EvidenceConstellation from "./EvidenceConstellation.jsx";
-import { Expertise, AppliedPractice, BusinessPractice } from "./Expertise.jsx";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, ArrowDown, DownloadSimple, GithubLogo, LinkedinLogo, List, X, ChartLineUp, Code, ShieldCheck } from "@phosphor-icons/react";
+import { translateContent, translateText } from "./site-language.js";
+import { projects, methods, experiences, earlierFoundations, interests } from "./portfolio-data.js";
+import Journey from "./Journey.jsx";
 
-const navItems = [
-  { id: "constellation", label: "Story" },
-  { id: "capabilities", label: "Expertise" },
-  { id: "experience", label: "Experience" },
-  { id: "work", label: "Current Projects" },
-  { id: "off-hours", label: "Off Hours" },
-];
-
-const cvAssets = {
-  en: "/assets/Xiaoyuan_Zhang_CV_2026_EN.pdf?v=20260915",
-  zh: "/assets/Xiaoyuan_Zhang_CV_2026_ZH.pdf?v=20260915",
+const covers = {
+  "cross-regulatory-safety": { title:["Multi-source safety data","多来源安全数据"], image:"data-streams.webp", line:["Data foundation · Ongoing analysis","数据基础 · 持续分析"], link:"https://github.com/Unravelreggie/vaers-prototype" },
+  "vaccine-modeling": { title:["Clinical statistical modeling","临床统计建模"], image:"model-distributions.webp", line:["Bayesian · Longitudinal · Machine learning","贝叶斯 · 纵向模型 · 机器学习"], link:"https://github.com/Unravelreggie/Hierarchical-Bayesian-Diffusion-Drift-Model-for-Working-Memory-Analysis" },
+  "clinical-sdv": { title:["SDV review workflows","SDV 核查工作流"], image:"review-workflow.webp", line:["AI-assisted development · Pilot / UAT","AI 辅助开发 · 试点 / 用户验收"] }
 };
+const featuredIds = ["cross-regulatory-safety", "vaccine-modeling", "clinical-sdv"];
+const clamp = (v,a=0,b=1) => Math.max(a,Math.min(b,v));
 
-const projects = [
-  {
-    id: "vaccine-modeling",
-    eyebrow: "PREDICT → INFER",
-    title: "Multi-Vaccine Clinical Modeling & Statistical Inference",
-    summary:
-      "An active, multi-stage analysis program that predicts post-immunization response levels and examines how they relate to other clinical outcomes.",
-    tags: ["LASSO · RF · XGBoost", "ANCOVA · SEM · Bayesian", "Active analysis"],
-    maturity: "Active · iterative modeling",
-    icon: ChartLineUp,
-    role: "Primary Analyst",
-    question:
-      "Which baseline and study variables help predict post-immunization response, and how should relationships with other outcomes be estimated without confusing prediction with inference?",
-    method:
-      "Stage-gated exploratory analysis followed by LASSO, regression, random forest, and gradient-boosted trees for prediction; ANCOVA, structural equation modeling, and Bayesian models for statistical inference.",
-    ownership:
-      "I lead exploratory analysis, outcome and feature framing, model implementation, diagnostic review, and synthesis of findings across successive vaccine datasets.",
-    collaboration:
-      "A programming lead coordinates experiment execution, statistical leadership sets milestones, and a statistician independently checks test outputs with me.",
-    validation:
-      "Predictive performance, calibration, assumptions, sensitivity analyses, and agreement across modeling approaches are reviewed separately. Results remain qualified until professional review is complete.",
-    value:
-      "Connects practical prediction with interpretable inference so that model performance and scientific meaning are evaluated as different, complementary questions.",
-  },
-  {
-    id: "cross-regulatory-safety",
-    eyebrow: "HARMONIZE → SIGNAL",
-    title: "Cross-Regulatory Post-Market Safety Data & Signal Analytics",
-    summary:
-      "A harmonized ADR data foundation spanning FDA, EMA, PMDA, and Health Canada sources, built for reproducible descriptive and signal-oriented analysis.",
-    tags: ["FDA · EMA · PMDA · Health Canada", "RWD engineering", "Signal analytics"],
-    maturity: "Active · database & analysis",
-    icon: Database,
-    role: "Primary Data Developer & Analyst",
-    question:
-      "How can heterogeneous spontaneous-reporting systems be aligned well enough to compare reporting patterns and support product-focused signal review?",
-    method:
-      "Full-source ingestion, shared field definitions, terminology and product mappings, provenance tracking, reproducible transformations, descriptive analysis, and cross-source signal views.",
-    ownership:
-      "I designed and built the database, harmonization workflow, analytical layer, and visualization structure, and I lead the ongoing product-focused analyses.",
-    collaboration:
-      "PV risk leadership aligns the analytical output and signal-review dimensions; the QPPV reviews visualization standards, data dimensions, and product-level framing.",
-    validation:
-      "Source counts, field completeness, duplicate logic, terminology mappings, time consistency, and reproducible outputs are checked by market. Reporting patterns are not presented as incidence or causal effects.",
-    value:
-      "Creates a common analytical foundation for cross-market pharmacovigilance while keeping source limitations and expert signal assessment visible.",
-  },
-  {
-    id: "meddra-operations",
-    eyebrow: "RETRIEVE → REVIEW",
-    title: "Multilingual MedDRA Coding Assistance & PV Operations Data",
-    summary:
-      "A trilingual English–Chinese–Japanese assistance layer that ranks likely MedDRA PT and LLT candidates from physician narratives and supports aligned PV data workflows.",
-    tags: ["MedDRA PT / LLT", "Vector retrieval", "EN · 中文 · 日本語"],
-    maturity: "Active · co-development",
-    icon: Code,
-    role: "Co-developer with Programming Lead",
-    question:
-      "How can multilingual medical narratives be converted into fast, reviewable terminology candidates without replacing qualified coding judgment?",
-    method:
-      "Language-aware text processing, semantic vector retrieval, ranked PT and LLT candidates, side-by-side terminology comparison, and bilingual web-function translation and alignment.",
-    ownership:
-      "I co-develop the retrieval logic, terminology comparison workflow, PV operations data handling, and the multilingual web experience.",
-    collaboration:
-      "The programming lead and I develop the system together; qualified reviewers retain final confirmation of every coding decision.",
-    validation:
-      "Candidate rankings are evaluated against reviewer-confirmed examples, with source text and alternatives kept visible. The tool assists selection; it does not autonomously assign regulated codes.",
-    value:
-      "Reduces repetitive terminology search while preserving traceability, multilingual context, and human accountability.",
-  },
-  {
-    id: "international-gvp",
-    eyebrow: "SOURCE → MAP",
-    title: "International GVP Regulatory Intelligence & Requirement Mapping",
-    summary:
-      "Independent, source-grounded analysis that maps ICH, regional, and national pharmacovigilance requirements into traceable operational interpretations.",
-    tags: ["ICH & regional frameworks", "Requirement mapping", "Source traceability"],
-    maturity: "Active · independent analysis",
-    icon: FileText,
-    role: "Independent Regulatory Intelligence Analyst",
-    question:
-      "How can changing GVP expectations across Asia, Europe, the Middle East, Africa, and Latin America be compared without losing source context or jurisdictional differences?",
-    method:
-      "Primary-source retrieval, versioned evidence records, requirement decomposition, jurisdictional comparison, trigger mapping, and bilingual interpretation for operational use.",
-    ownership:
-      "I independently conduct the regulatory research, source assessment, requirement mapping, comparative analysis, and written interpretation.",
-    collaboration:
-      "High-impact interpretations are escalated to the relevant medical, legal, quality, or local-market professionals before operational adoption.",
-    validation:
-      "Every material interpretation remains linked to its source and effective context. The work supports professional review and does not make autonomous legal or compliance decisions.",
-    value:
-      "Turns fragmented regulatory reading into a maintainable comparison layer that helps teams identify obligations, differences, and follow-up questions.",
-  },
-  {
-    id: "clinical-sdv",
-    eyebrow: "EXTRACT → RECONCILE",
-    title: "Clinical SDV Consistency Review System",
-    summary:
-      "An end-to-end review workflow that converts source documents into traceable fields, applies consistency rules, routes exceptions, and supports reviewer feedback during pilot use.",
-    tags: ["OCR & extraction", "Consistency logic", "Human review"],
-    maturity: "Pilot · user acceptance testing",
-    icon: MagnifyingGlass,
-    role: "End-to-End System Developer",
-    question:
-      "How can source-data verification focus attention on meaningful inconsistencies while preserving direct access to the original record and clinical context?",
-    method:
-      "Document processing, field extraction, configurable consistency rules, exception routing, a reviewer-facing interface, deployment, and iterative refinement.",
-    ownership:
-      "I implement the complete workflow—from source-document processing and review logic to the interface, deployment, testing support, and ongoing iteration.",
-    collaboration:
-      "CRA colleagues define clinical review requirements and business rules; I translate those requirements into the operating system and refine it with their feedback.",
-    validation:
-      "The system is being tested by business users against review scenarios. Exceptions remain visible for manual assessment, and workflow changes are versioned through feedback cycles.",
-    value:
-      "Creates a traceable bridge between source documents, consistency checks, and human SDV decisions without presenting automation as clinical judgment.",
-  },
-];
-
-const methods = [
-  {
-    number: "01",
-    title: "Latent decision mechanisms",
-    text: "Hierarchical Drift Diffusion Models to infer how evidence accumulation, caution, and response processes may differ across people and conditions.",
-    tools: "HDDM / HSSM · Hierarchical Bayes",
-  },
-  {
-    number: "02",
-    title: "Signals across people and studies",
-    text: "Mixed models, longitudinal methods, and multilevel structures for repeated measures, heterogeneous populations, and clustered clinical data.",
-    tools: "LMM / GLMM · Longitudinal · SEM",
-  },
-  {
-    number: "03",
-    title: "Prediction with accountable limits",
-    text: "Machine learning for screening and prioritization, paired with transparent validation, interpretable features, and explicit limits on generalization.",
-    tools: "Random Forest · Validation · Explainability",
-  },
-];
-
-function scrollToId(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
-}
-
-function LanguageToggle({ language, onChange, label }) {
-  return (
-    <div className="language-toggle" role="group" aria-label={label}>
-      <button className={language === "en" ? "active" : ""} onClick={() => onChange("en")} aria-pressed={language === "en"}>
-        EN
-      </button>
-      <span aria-hidden="true">/</span>
-      <button className={language === "zh" ? "active" : ""} onClick={() => onChange("zh")} aria-pressed={language === "zh"}>
-        {"\u4e2d\u6587"}
-      </button>
-    </div>
-  );
-}
-
-function Header({ language, onLanguageChange, items, t, cvHref }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
+function useDepth(root, enabled) {
   useEffect(() => {
-    const closeOnResize = () => window.innerWidth > 820 && setMenuOpen(false);
-    window.addEventListener("resize", closeOnResize);
-    return () => window.removeEventListener("resize", closeOnResize);
-  }, []);
-
-  return (
-    <>
-      <div className="scroll-progress" aria-hidden="true">
-        <span />
-      </div>
-      <header className="site-header">
-        <button className="wordmark" onClick={() => scrollToId("top")} aria-label={t("Back to top")}>
-          <span>{t("REGINALD'S PERSONAL WEBSITE")}</span>
-          <strong>UNRAVEL</strong>
-          <small>{t("Xiaoyuan Zhang \u00b7 \u5f20\u6f47\u8fdc")}</small>
-        </button>
-        <nav className="desktop-nav" aria-label={t("Primary navigation")}>
-          {items.map((item) => (
-            <button key={item.id} onClick={() => scrollToId(item.id)}>
-              {item.label}
-            </button>
-          ))}
-          <a href={cvHref} target="_blank" rel="noreferrer" aria-label={t("View CV")}>
-            CV
-          </a>
-          <LanguageToggle language={language} onChange={onLanguageChange} label={t("Language selection")} />
-        </nav>
-        <button
-          className="menu-button"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          aria-label={menuOpen ? t("Close navigation") : t("Open navigation")}
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          {menuOpen ? <X size={24} /> : <List size={25} />}
-        </button>
-        <div id="mobile-menu" className={`mobile-menu ${menuOpen ? "is-open" : ""}`}>
-          {items.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                scrollToId(item.id);
-                setMenuOpen(false);
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
-          <a href={cvHref} target="_blank" rel="noreferrer">
-            {t("View CV")}
-          </a>
-          <LanguageToggle language={language} onChange={onLanguageChange} label={t("Language selection")} />
-        </div>
-      </header>
-    </>
-  );
-}
-
-function ProjectDialog({ project, onClose, t }) {
-  const dialogRef = useRef(null);
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
-  useEffect(() => {
-    if (!project) return undefined;
-    const opener = document.activeElement;
-    const dialog = dialogRef.current;
-    const background = document.getElementById("main-content");
-    const header = document.querySelector(".site-header");
-    background.inert = true;
-    header.inert = true;
-    dialog.querySelector("button")?.focus();
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") closeRef.current();
-      if (event.key !== "Tab") return;
-      const items = [...dialog.querySelectorAll('button, a[href], [tabindex="0"]')];
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault(); last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault(); first.focus();
-      }
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    let frame=0;
+    const update=()=>{
+      frame=0;
+      if(!root.current)return;
+      const rect=root.current.getBoundingClientRect();
+      const amount=enabled&&!media.matches?clamp(-rect.top/Math.max(rect.height,1),-.2,1):0;
+      root.current.style.setProperty("--travel", amount);
+      root.current.dataset.depth = enabled&&!media.matches?"on":"off";
     };
+    const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
+    update(); addEventListener("scroll",schedule,{passive:true}); addEventListener("resize",schedule); media.addEventListener("change",schedule);
+    return()=>{cancelAnimationFrame(frame);removeEventListener("scroll",schedule);removeEventListener("resize",schedule);media.removeEventListener("change",schedule);};
+  },[root,enabled]);
+}
+
+function ProjectDialog({project,language,onClose}) {
+  const ref=useRef(null);
+  const onCloseRef=useRef(onClose); onCloseRef.current=onClose;
+  const t=x=>translateText(x,language);
+  const pick=(en,zh)=>language==="zh"?zh:en;
+  useEffect(()=>{
+    const dialog=ref.current;
+    if(!project)return;
+    const opener=document.activeElement;
+    dialog.showModal();
     document.body.classList.add("dialog-open");
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.classList.remove("dialog-open");
-      background.inert = false;
-      header.inert = false;
-      window.removeEventListener("keydown", onKeyDown);
-      opener?.focus({ preventScroll: true });
-    };
-  }, [project?.id]);
-
-  if (!project) return null;
-  const Icon = project.icon;
-
-  return (
-    <div className="dialog-backdrop" role="presentation" onMouseDown={onClose}>
-      <article
-        ref={dialogRef}
-        className="project-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="dialog-title"
-        onMouseDown={(event) => event.stopPropagation()}
-      >
-        <button className="dialog-close" onClick={onClose} aria-label={t("Close case file")}>
-          <X size={22} />
-        </button>
-        <div className="dialog-heading">
-          <Icon size={28} weight="light" />
-          <p>{project.eyebrow}</p>
-          <h2 id="dialog-title">{project.title}</h2>
-          <p className="dialog-role">
-            <span>{t("MY ROLE")}</span>
-            {project.role}
-          </p>
-          <span className="status-pill">{project.maturity}</span>
-        </div>
-        <div className="case-file-grid">
-          <section>
-            <span>{t("01 / QUESTION")}</span>
-            <p>{project.question}</p>
-          </section>
-          <section>
-            <span>{t("02 / METHOD & SYSTEM")}</span>
-            <p>{project.method}</p>
-          </section>
-          <section>
-            <span>{t("03 / WHAT I OWN")}</span>
-            <p>{project.ownership}</p>
-          </section>
-          <section>
-            <span>{t("04 / COLLABORATION")}</span>
-            <p>{project.collaboration}</p>
-          </section>
-          <section>
-            <span>{t("05 / VALIDATION & GOVERNANCE")}</span>
-            <p>{project.validation}</p>
-          </section>
-          <section>
-            <span>{t("06 / EVIDENCE VALUE")}</span>
-            <p>{project.value}</p>
-          </section>
-        </div>
-        <p className="confidentiality-note">
-          {t("Public-safe overview. Patient-level data, company-confidential figures, and regulated records are not shown.")}
-        </p>
-      </article>
+    return()=>{dialog.close();document.body.classList.remove("dialog-open");opener?.focus({preventScroll:true});};
+  },[project?.id]);
+  if(!project)return null;
+  const cover=covers[project.id];
+  return <dialog ref={ref} className="project-dialog" aria-labelledby="case-title" onKeyDown={e=>{if(e.key!=="Tab")return; const items=[...ref.current.querySelectorAll("button, a[href]")]; const first=items[0],last=items[items.length-1]; if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}} onCancel={e=>{e.preventDefault();onCloseRef.current();}} onClick={e=>{if(e.target===ref.current)onCloseRef.current();}}>
+    <div className="case-content">
+      <button className="close-button" onClick={onClose} aria-label={pick("Close project","关闭项目")}><X size={24}/></button>
+      <p className="eyebrow">{pick("PROJECT NOTES","项目说明")}</p>
+      <h2 id="case-title">{project.title}</h2>
+      <div className="case-meta"><span>{project.role}</span><span>{project.maturity}</span></div>
+      {cover&&<div className="case-visual"><img src={"/assets/"+cover.image} alt="" width="640" height="360"/><small>{pick("Conceptual illustration · not project results","概念示意 · 非项目结果")}</small></div>}
+      <p className="case-summary">{project.summary}</p>
+      <div className="case-grid">{[
+        ["QUESTION","研究或业务问题",project.question],["MY CONTRIBUTION","我的职责",project.ownership],
+        ["METHOD & SYSTEM","方法与系统",project.method],["COLLABORATION","协作方式",project.collaboration],
+        ["VALIDATION","验证与边界",project.validation],["VALUE","工作价值",project.value]
+      ].map(([en,zh,text])=><section key={en}><h3>{pick(en,zh)}</h3><p>{text}</p></section>)}</div>
+      {cover?.link&&<a className="text-link" href={cover.link} target="_blank" rel="noreferrer">{pick("Related public research / prototype — separate from this business project","相关公开研究／原型——与本业务项目独立")} <ArrowRight size={18}/></a>}
+      <p className="small-note">{t("Public-safe overview. Patient-level data, company-confidential figures, and regulated records are not shown.")}</p>
     </div>
-  );
-}
-
-function AppContent() {
-
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [qualityMode, setQualityMode] = useState("gcp");
-  const [language, setLanguage] = useState(() => {
-    try {
-      return window.localStorage.getItem("unravel-language") === "zh" ? "zh" : "en";
-    } catch {
-      return "en";
-    }
-  });
-
-  const t = (text) => translateText(text, language);
-  const cvHref = cvAssets[language];
-  const localizedNavItems = useMemo(
-    () =>
-      translateContent(navItems, language).map((item) =>
-        item,
-      ),
-    [language],
-  );
-  const localizedExperiences = useMemo(() => translateContent(experiences, language), [language]);
-  const localizedFoundations = useMemo(() => translateContent(earlierFoundations, language), [language]);
-  const localizedProjects = useMemo(() => translateContent(projects, language), [language]);
-  const localizedMethods = useMemo(() => translateContent(methods, language), [language]);
-  const localizedInterests = useMemo(() => translateContent(interests, language), [language]);
-  const selectedProject = localizedProjects.find((project) => project.id === selectedProjectId) ?? null;
-
-
-  const qualityCopy = useMemo(
-    () => translateContent({
-      gcp: {
-        label: "Clinical research",
-        title: "Quality is designed before analysis.",
-        body: "GCP connects protocol intent, participant protection, source data, traceability, and reliable analysis. It frames data quality as part of study conduct—not a clean-up step at the end.",
-        points: ["Protocol-aligned capture", "Source traceability", "Human-subject protection"],
-      },
-      gvp: {
-        label: "Post-market evidence",
-        title: "Quality continues after approval.",
-        body: "GVP connects case intake, signal evaluation, reporting responsibilities, vendor oversight, benefit–risk thinking, and evidence communication across markets.",
-        points: ["Global-to-local data flow", "Accountable reporting", "Ongoing benefit–risk evidence"],
-      },
-    }, language),
-    [language],
-  );
-
-  useEffect(() => {
-    document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-    document.title = siteTitle(language);
-    try {
-      window.localStorage.setItem("unravel-language", language);
-    } catch {
-      // The language toggle still works when storage is unavailable.
-    }
-  }, [language]);
-
-  useEffect(() => {
-    if (CSS.supports("animation-timeline", "scroll()")) return undefined;
-    let frame = 0;
-    const update = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const distance = document.documentElement.scrollHeight - window.innerHeight;
-        const bar = document.querySelector(".scroll-progress span");
-        if (bar) bar.style.transform = `scaleX(${distance > 0 ? window.scrollY / distance : 0})`;
-      });
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  const activeQuality = qualityCopy[qualityMode];
-
-  return (
-    <>
-      <a className="skip-link" href="#main-content">
-        {t("Skip to content")}
-      </a>
-      <Header
-        language={language}
-        onLanguageChange={setLanguage}
-        items={localizedNavItems}
-        t={t}
-        cvHref={cvHref}
-      />
-      <main id="main-content">
-        <section id="top" className="hero section-dark">
-          <div className="hero-copy">
-            <p className="kicker">{t("REGINALD'S PERSONAL WEBSITE")}</p>
-            <p className="hero-owner">{t("Reginald \u2014 Xiaoyuan Zhang / \u5f20\u6f47\u8fdc")}</p>
-            <h1>UNRAVEL</h1>
-            <h2>{t("From human decisions to medical evidence systems.")}</h2>
-            <p className="hero-lede">{t("I connect statistical research, data and AI engineering, and international pharmacovigilance to build evidence and tools for real clinical and safety workflows.")}</p>
-            <p className="discipline-line">{t("Computational Psychiatry · fMRI · Biostatistics · RWE · Safety Science")}</p>
-            <div className="hero-actions">
-              <button className="button button-primary" onClick={() => scrollToId("constellation")}>
-                {t("Follow the story")} <ArrowRight size={18} />
-              </button>
-              <a className="button button-secondary" href={cvHref} target="_blank" rel="noreferrer">
-                {t("View CV")} <FileText size={18} />
-              </a>
-            </div>
-            <div className="hero-shortcuts">
-              <a href="#work">{language === "zh" ? "直接查看项目" : "Go straight to projects"} ↗</a>
-              <a href="#open-research">{language === "zh" ? "公开研究代码" : "Public research code"} ↗</a>
-            </div>
-            <p className="scroll-invitation">{language === "zh" ? "向下滚动 · 点亮一段经历 · 进入下一层" : "Scroll down · illuminate a connection · enter the next layer"} ↓</p>
-          </div>
-        </section>
-
-
-        <div className="profile-facts">
-          <span><b>MSPH · Biostatistics</b>{language === "zh" ? "迈阿密大学 · 2023–2025" : "University of Miami · 2023–2025"}</span>
-          <span><b>{language === "zh" ? "哲学 · 心理学 · 认知科学" : "Philosophy · Psychology · Cognitive Science"}</b>{language === "zh" ? "罗格斯大学 · BA 三专业" : "Rutgers University · BA, triple major"}</span>
-          <span><b>{language === "zh" ? "国际药物警戒" : "International Pharmacovigilance"}</b>{language === "zh" ? "科兴 · 2025 至今" : "SINOVAC · 2025–present"}</span>
-        </div>
-        <EvidenceConstellation language={language} />
-        <Expertise language={language} />
-
-        <section id="origin" className="origin section-dark section-pad">
-          <div className="section-heading light" data-reveal>
-            <p className="section-number">{t("RESEARCH FOUNDATIONS / HOW DO WE KNOW?")}</p>
-            <h2>{t("Before evidence becomes a system, it begins as a question.")}</h2>
-            <p>{t("My research path began with how people perceive, decide, and behave—then moved toward the latent processes that cannot be observed directly.")}</p>
-          </div>
-          <div className="origin-grid">
-            <figure className="fmri-frame" data-reveal>
-              <img
-                src="/assets/fmri-illustrative.webp"
-                alt={t("Illustrative fMRI-inspired brain scan film on archival research papers")}
-              />
-              <figcaption>{t("Illustrative fMRI-inspired visual · no patient or study data shown")}</figcaption>
-            </figure>
-            <div className="research-notes" data-reveal>
-              <article>
-                <Brain size={27} weight="light" />
-                <span>{t("COMPUTATIONAL PSYCHIATRY")}</span>
-                <h3>{t("Inference beneath behavior")}</h3>
-                <p>{t("Hierarchical drift diffusion modeling to examine latent mechanisms in working-memory decisions, with uncertainty carried through the model rather than hidden behind a single score.")}</p>
-              </article>
-              <article>
-                <ChartLineUp size={27} weight="light" />
-                <span>{t("COGNITIVE NEUROSCIENCE")}</span>
-                <h3>{t("Signals in context")}</h3>
-                <p>{t("fMRI-based affective flexibility research using linear mixed-effects models, alongside behavioral, neuropsychological, ECG, and multimodal data collection.")}</p>
-              </article>
-              <article>
-                <MagnifyingGlass size={27} weight="light" />
-                <span>{t("MACHINE LEARNING")}</span>
-                <h3>{t("Prediction with restraint")}</h3>
-                <p>{t("Random-forest work on anxiety and executive-function features—treating prediction as a testable tool, not a substitute for scientific interpretation.")}</p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="quality" className="quality section-paper section-pad">
-          <div className="paper-inner">
-            <div className="section-heading dark" data-reveal>
-              <p className="section-number">{t("EVIDENCE QUALITY / HOW DO WE MEASURE?")}</p>
-              <h2>{t("Evidence quality across the product lifecycle.")}</h2>
-              <p>{t("Analysis is only as credible as the system that generated the data. GCP and GVP are not acronyms in a skills list—they are two connected quality environments.")}</p>
-            </div>
-            <div className="quality-console" data-reveal>
-              <div className="quality-switch" role="tablist" aria-label={t("Evidence quality framework")}>
-                <button
-                  className={qualityMode === "gcp" ? "active" : ""}
-                  role="tab"
-                  aria-selected={qualityMode === "gcp"}
-                  onClick={() => setQualityMode("gcp")}
-                >
-                  <span>GCP</span>
-                  {t("Clinical evidence")}
-                </button>
-                <button
-                  className={qualityMode === "gvp" ? "active" : ""}
-                  role="tab"
-                  aria-selected={qualityMode === "gvp"}
-                  onClick={() => setQualityMode("gvp")}
-                >
-                  <span>GVP</span>
-                  {t("Post-market evidence")}
-                </button>
-              </div>
-              <article className="quality-detail" key={qualityMode}>
-                <p>{activeQuality.label}</p>
-                <h3>{activeQuality.title}</h3>
-                <div>{activeQuality.body}</div>
-                <ul>
-                  {activeQuality.points.map((point) => (
-                    <li key={point}>
-                      <CheckCircle size={19} weight="fill" /> {point}
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            </div>
-            <blockquote data-reveal>{t("“Good data. Better questions. Rigor is a habit.”")}</blockquote>
-          </div>
-        </section>
-
-        <section id="experience" className="experience section-dark section-pad" aria-labelledby="experience-title">
-          <div className="section-heading light" data-reveal>
-            <p className="section-number">{t("EXPERIENCE / EVIDENCE IN PRACTICE")}</p>
-            <h2 id="experience-title">{t("Work changed the scale of the question.")}</h2>
-            <p>{t("Across research, clinical operations, medical data, and regulated safety systems, each role revealed another part of how evidence is generated, governed, and used. Pharmacovigilance is one domain in that broader path.")}</p>
-          </div>
-          <div className="experience-grid">
-            {localizedExperiences.map((item) => {
-              const Icon = item.icon;
-              return (
-                <article className="experience-card" key={item.id} data-reveal>
-                  <div className="experience-card-top">
-                    <Icon size={26} weight="light" aria-hidden="true" />
-                    <time>{item.period}</time>
-                  </div>
-                  <p className="experience-company">{item.company}</p>
-                  <h3>{item.role}</h3>
-                  <p className="experience-location">{item.location}</p>
-                  <p className="experience-summary">{item.summary}</p>
-                  <div className="experience-thread">
-                    <span>{t("PATH THREAD")}</span>
-                    <p>{item.path}</p>
-                  </div>
-                  <ul className="experience-tags" aria-label={t("Key capabilities")}>
-                    {item.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
-                    ))}
-                  </ul>
-                </article>
-              );
-            })}
-          </div>
-          <div className="earlier-foundations" data-reveal>
-            <div className="foundations-heading">
-              <p>{t("EARLIER FOUNDATIONS")}</p>
-              <h3>{t("Research, communication, and cross-cultural coordination came first.")}</h3>
-            </div>
-            <div className="foundation-list">
-              {localizedFoundations.map((item) => (
-                <article key={item.id}>
-                  <time>{item.year}</time>
-                  <h4>{item.title}</h4>
-                  <p>{item.detail}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <AppliedPractice language={language} />
-
-        <section id="work" className="work section-dark section-pad">
-          <div className="section-heading light" data-reveal>
-            <p className="section-number">{t("CURRENT WORK / ACTIVE EVIDENCE SYSTEMS")}</p>
-            <h2>{t("Current projects, with ownership made visible.")}</h2>
-            <p>{t("These active projects connect clinical modeling, post-market data, terminology systems, regulatory intelligence, and source-data quality. Open a case file to see my role, methods, collaborators, and governance boundaries.")}</p>
-          </div>
-          <div className="project-grid">
-            {localizedProjects.map((project) => {
-              const Icon = project.icon;
-              return (
-                <button className="project-card" key={project.id} onClick={() => setSelectedProjectId(project.id)} data-reveal>
-                  <div className="project-card-top">
-                    <Icon size={26} weight="light" />
-                    <span>{project.maturity}</span>
-                  </div>
-                  <p className="project-eyebrow">{project.eyebrow}</p>
-                  <h3>{project.title}</h3>
-                  <p className="project-role">
-                    <span>{t("MY ROLE")}</span>
-                    {project.role}
-                  </p>
-                  <p>{project.summary}</p>
-                  <CapabilityTags id={project.id} language={language} />
-                  <div className="tag-row">
-                    {project.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
-                  <span className="card-action">
-                    {t("Open case file")} <ArrowRight size={17} />
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          <p className="work-note" data-reveal>{t("Public-safe project summaries: specific products, internal identifiers, confidential operational details, patient-level data, and unpublished results are intentionally omitted.")}</p>
-        </section>
-
-        <OpenResearch language={language} />
-
-        <section id="lab" className="lab section-paper section-pad">
-          <div className="paper-inner lab-inner">
-            <div className="section-heading dark" data-reveal>
-              <p className="section-number">{t("METHODS / HOW I WORK")}</p>
-              <h2>{t("Model the process, not only the outcome.")}</h2>
-              <p>{t("My method stack spans statistical inference, computational models, and pragmatic data systems. The common thread is a preference for assumptions that can be examined and results that can be challenged.")}</p>
-            </div>
-            <div className="method-list">
-              {localizedMethods.map((method) => (
-                <article key={method.number} data-reveal>
-                  <span>{method.number}</span>
-                  <div>
-                    <h3>{method.title}</h3>
-                    <p>{method.text}</p>
-                    <small>{method.tools}</small>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className="publication-note" data-reveal>
-              <p>{t("SELECTED PUBLICATION")}</p>
-              <h3>{t("A Multilevel Study of Leaders’ Emotional Labor on Servant Leadership and Job Satisfaction")}</h3>
-              <span>{t("Research on Emotion in Organizations, Vol. 15 · 2019 · Co-author")}</span>
-            </div>
-          </div>
-        </section>
-
-        <BusinessPractice language={language} />
-
-        <section id="future" className="future section-pad">
-          <div className="future-copy" data-reveal>
-            <p className="section-number">{t("NEXT / WHERE THIS CAN GO")}</p>
-            <h2>{t("From medical questions to decision-ready evidence.")}</h2>
-            <p>{t("I am building toward roles where biostatistics, clinical and real-world data, pharmacoepidemiology, Safety Science, and technology support better medical decisions—from rigorous analysis to evidence systems that can operate in regulated environments.")}</p>
-            <div className="future-fields" aria-label={t("Target fields")}>
-              <span>{t("Real-World Evidence")}</span>
-              <span>{t("Clinical Data Science")}</span>
-              <span>{t("Safety Science")}</span>
-              <span>{t("Pharmacoepidemiology")}</span>
-              <span>{t("Medical Data Analytics")}</span>
-              <span>{t("Intelligent Health Systems")}</span>
-            </div>
-          </div>
-          <div className="decision-panel" data-reveal>
-            <div className="panel-header">
-              <ShieldCheck size={26} />
-              <div>
-                <span>{t("INTELLIGENT HEALTH SYSTEM")}</span>
-                <strong>{t("Evidence before automation")}</strong>
-              </div>
-            </div>
-            <ul>
-              <li>
-                <span>01</span> {t("Start from the medical question")}
-              </li>
-              <li>
-                <span>02</span> {t("Understand how the data were generated")}
-              </li>
-              <li>
-                <span>03</span> {t("Model uncertainty and heterogeneity")}
-              </li>
-              <li>
-                <span>04</span> {t("Validate against source and context")}
-              </li>
-              <li>
-                <span>05</span> {t("Build for traceable human decisions")}
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        <section id="off-hours" className="off-hours section-dark section-pad" aria-labelledby="off-hours-title">
-          <div className="section-heading light" data-reveal>
-            <p className="section-number">{t("OFF HOURS / THE HUMAN SIDE")}</p>
-            <h2 id="off-hours-title">{t("Life, too, is a long practice.")}</h2>
-            <p>{t("Outside work, my time goes to tennis, fitness, swimming, Rocky and Chacha, and small experiments with AI. For me, growth comes from the things I am willing to return to every day.")}</p>
-          </div>
-          <div className="interest-grid">
-            {localizedInterests.map((item) => {
-              const Icon = item.icon;
-              const SecondaryIcon = item.secondaryIcon;
-              return (
-                <article className={`interest-card interest-card--${item.id}`} key={item.id} data-reveal>
-                  <div className="interest-card-top" aria-hidden="true">
-                    <Icon size={30} weight="light" />
-                    {SecondaryIcon ? <SecondaryIcon size={25} weight="light" /> : null}
-                  </div>
-                  <p className="interest-eyebrow">{item.eyebrow}</p>
-                  <h3>{item.title}</h3>
-                  <p className="interest-fact">{item.fact}</p>
-                  <p className="interest-body">{item.body}</p>
-                  <ul className="interest-tags" aria-label={t("Details")}>
-                    {item.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
-                    ))}
-                  </ul>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section id="contact" className="contact section-dark">
-          <div>
-            <p className="section-number">{t("CONTACT / KEEP IN TOUCH")}</p>
-            <h2>{t("Complexity is where the work begins.")}</h2>
-            <p>{t("Xiaoyuan “Reginald” Zhang · 张潇远 · Biostatistics · Medical Evidence · Intelligent Health Systems")}</p>
-            <address className="contact-details">
-              <span>
-                <b>{t("WeChat")}</b>
-                reginaldzhang1119
-              </span>
-              <a href="tel:+8613552604882">
-                <b>{t("Mobile")}</b>
-                +86 135-5260-4882
-              </a>
-            </address>
-          </div>
-          <div className="contact-actions"><a className="source-link" href="https://github.com/Unravelreggie/Unravelreggie.github.io" target="_blank" rel="noreferrer">{language === "zh" ? "网站源码" : "Website source"} ↗</a>
-            <a className="button button-primary" href="mailto:reggiezhang9719@gmail.com">
-              {t("Start a conversation")} <ArrowRight size={18} />
-            </a>
-            <a className="icon-link" href="https://github.com/Unravelreggie" target="_blank" rel="noreferrer" aria-label={t("GitHub profile")}>
-              <GithubLogo size={24} />
-            </a>
-            <a
-              className="icon-link"
-              href="https://www.linkedin.com/in/xiaoyuan-zhang-4a4999352"
-              target="_blank"
-              rel="noreferrer"
-              aria-label={t("LinkedIn profile")}
-            >
-              <LinkedinLogo size={24} />
-            </a>
-          </div>
-        </section>
-      </main>
-      <ProjectDialog project={selectedProject} onClose={() => setSelectedProjectId(null)} t={t} />
-    </>
-  );
+  </dialog>;
 }
 
 export function App() {
-  return <AppContent />;
+  const [language,setLanguage]=useState(()=>{try{return localStorage.getItem("unravel-language")==="zh"?"zh":"en";}catch{return "en";}});
+  const [menu,setMenu]=useState(false);
+  const [selectedId,setSelectedId]=useState(null);
+  const [motion,setMotion]=useState(true);
+  const hero=useRef(null);
+  const l=language==="zh"?1:0;
+  const pick=(en,zh)=>l?zh:en;
+  const t=x=>translateText(x,language);
+  const content=translateContent(projects,language);
+  const history=translateContent(experiences,language);
+  const methodContent=translateContent(methods,language);
+  const personal=translateContent(interests,language);
+  const cv="/assets/Xiaoyuan_Zhang_CV_2026_"+(l?"ZH":"EN")+".pdf?v=20260915";
+  useDepth(hero,motion);
+  useEffect(()=>{
+    document.documentElement.lang=l?"zh-CN":"en";
+    document.title=pick("Xiaoyuan Zhang — Biostatistics, Data & International PV","张潇远 — 生物统计、数据与国际药物警戒");
+    try{localStorage.setItem("unravel-language",language);}catch{}
+  },[language]);
+  const nav=[["work","Work","项目"],["capabilities","Approach","能力"],["experience","About","经历"],["constellation","My path","成长路径"]];
+  const navigate=()=>setMenu(false);
+  return <>
+    <a className="skip-link" href="#main-content">{pick("Skip to content","跳至正文")}</a>
+    <header className="site-header">
+      <a href="#top" className="wordmark" aria-label={pick("Xiaoyuan Zhang — back to top","张潇远——返回首页")}><strong>UNRAVEL</strong><span>Xiaoyuan Zhang</span></a>
+      <nav className="desktop-nav" aria-label={pick("Primary navigation","主导航")}>{nav.map(([id,en,zh])=><a key={id} href={"#"+id}>{pick(en,zh)}</a>)}</nav>
+      <div className="header-actions"><div className="language-toggle" role="group" aria-label={pick("Language","语言")}><button onClick={()=>setLanguage("en")} aria-pressed={!l}>EN</button><span>/</span><button onClick={()=>setLanguage("zh")} aria-pressed={!!l}>中文</button></div><button className="menu-button" onClick={()=>setMenu(!menu)} aria-expanded={menu} aria-controls="mobile-nav" aria-label={pick(menu?"Close navigation":"Open navigation",menu?"关闭导航":"打开导航")}>{menu?<X size={23}/>:<List size={23}/>}</button></div>
+      {menu&&<nav id="mobile-nav" className="mobile-nav" aria-label={pick("Mobile navigation","移动端导航")}>{nav.map(([id,en,zh])=><a key={id} href={"#"+id} onClick={navigate}>{pick(en,zh)}</a>)}<a href={cv} target="_blank" rel="noreferrer" onClick={navigate}>{pick("View CV","查看简历")}</a></nav>}
+    </header>
+    <main id="main-content">
+      <section id="top" className="hero" ref={hero}>
+        <div className="hero-world" aria-hidden="true"><div className="hero-camera"><img className="hero-room" src="/assets/daylight-room.webp" alt="" width="1800" height="1200" fetchPriority="high"/><img className="hero-streams" src="/assets/data-streams.webp" alt="" width="1400" height="950"/><div className="hero-annotation">{pick("A little curiosity.\nA clearer perspective.","保持好奇。\n看得更清楚。")}</div></div></div>
+        <div className="hero-copy">
+          <p className="eyebrow">{pick("RESEARCH · DATA · REAL-WORLD PRACTICE","研究 · 数据 · 真实业务")}</p>
+          <h1>Xiaoyuan Zhang<span lang="zh-CN">张潇远</span></h1>
+          <h2>{l?<><span>从问题出发，</span><span>让证据清晰。</span></>:"Turning questions into evidence."}</h2>
+          <p className="hero-position">{pick("Biostatistics · International pharmacovigilance","生物统计 · 国际药物警戒")}</p>
+          <p className="hero-intro">{pick("I connect statistical thinking, data engineering and applied AI with the practical work of international drug safety.","我将统计思维、数据工程与 AI 应用，连接到国际药物安全的实际工作。")}</p>
+          <p className="credentials"><span>{pick("MSPH Biostatistics · University of Miami","迈阿密大学 · MSPH 生物统计")}</span><span>{pick("International Pharmacovigilance · SINOVAC","SINOVAC 科兴 · 国际药物警戒")}</span></p>
+          <div className="hero-actions"><a className="button primary" href="#work"><span className="action-label-full">{pick("Explore selected work","查看代表项目")}</span><span className="action-label-short">{pick("Selected work","查看项目")}</span> <ArrowRight size={20}/></a><a className="button secondary" href={cv} target="_blank" rel="noreferrer">{pick("View CV","查看简历")} <DownloadSimple size={19}/></a></div>
+          <a className="text-link path-link" href="#constellation">{pick("My path","我的成长路径")} <ArrowDown size={17}/></a>
+        </div>
+        <div className="hero-caption"><span>{pick("Conceptual illustration","概念示意图")}</span><button className="motion-toggle" aria-pressed={motion} onClick={()=>setMotion(!motion)}>{pick(motion?"Motion on":"Motion off",motion?"动效开启":"动效关闭")}</button></div>
+      </section>
+
+      <section id="work" className="selected-work section-wrap">
+        <div className="section-head"><h2>{pick("Selected work","代表项目")}</h2><span className="section-rule"/><p>{pick("Questions. Methods. Something you can use.","从问题到方法，再到可用的成果。")}</p></div>
+        <div className="featured-grid">{featuredIds.map((id,i)=>{
+          const project=content.find(p=>p.id===id), cover=covers[id];
+          return <article key={id} className="featured-project"><span className="project-index">0{i+1}</span><div><button className="project-title" onClick={()=>setSelectedId(id)}><h3>{cover.title[l]}</h3><ArrowRight size={22}/></button><p className="project-line">{cover.line[l]}</p><button className="project-art" onClick={()=>setSelectedId(id)} aria-label={pick("Read project: ","查看项目：")+cover.title[l]}><img src={"/assets/"+cover.image} alt="" loading="lazy" width="640" height="360"/></button><p className="project-role">{project.role}</p><p className="project-brief">{id==="cross-regulatory-safety"?pick("Bringing VAERS, CVAR, JADER and EudraVigilance into a traceable analytical foundation.","将 VAERS、CVAR、JADER 与 EudraVigilance 组织为可追溯的分析基础。"):id==="vaccine-modeling"?pick("Framing outcomes, building models and interpreting uncertainty across clinical datasets.","围绕临床数据定义结局、构建模型，并解释不确定性。"):pick("Turning source documents and CRA requirements into a reviewable consistency workflow.","将源文档与 CRA 核查需求，转化为可追溯的一致性核查流程。")}</p><button className="text-link" onClick={()=>setSelectedId(id)}>{pick("Role, methods & validation","职责、方法与验证")} <ArrowRight size={17}/></button></div></article>;
+        })}</div>
+        <p className="art-note">{pick("Illustrations are conceptual. Project notes describe current roles, collaboration and validation status.","插图为概念示意。项目说明列出当前职责、协作方式与验证状态。")}</p>
+        <details className="more-work"><summary>{pick("More work: MedDRA assistance & regulatory intelligence","更多项目：MedDRA 编码辅助与法规情报")}</summary><div className="secondary-projects">{content.filter(p=>!featuredIds.includes(p.id)).map(p=><article key={p.id}><h3>{p.title}</h3><p>{p.summary}</p><small>{p.role} · {p.maturity}</small><button className="text-link" onClick={()=>setSelectedId(p.id)}>{pick("Read project notes","查看项目说明")} <ArrowRight size={17}/></button></article>)}</div></details>
+      </section>
+
+      <section id="capabilities" className="approach section-wrap">
+        <div className="section-head"><h2>{pick("How I work","我如何开展工作")}</h2><p>{pick("Three connected perspectives.","三种相互支撑的视角。")}</p></div>
+        <div className="approach-grid">
+          <article id="lab"><ChartLineUp size={30} weight="light"/><h3>{pick("Think statistically","用统计思考")}</h3><p>{pick("Start with the question, the data-generating process and the uncertainty. Choose a model for what it can explain.","从问题、数据产生过程与不确定性出发，选择适合回答问题的模型。")}</p><div className="method-list">{methodContent.map((m,i)=><details key={m.number}><summary>{["Bayesian & hierarchical models","Longitudinal & mixed models","Machine learning & validation"].map((x,j)=>j===i?pick(x,["贝叶斯与层级模型","纵向与混合效应模型","机器学习与验证"][j]):null)}</summary><p>{m.text}</p><small>{m.tools}</small></details>)}</div></article>
+          <article id="ai-practice"><Code size={30} weight="light"/><h3>{pick("Build useful systems","构建可用系统")}</h3><p>{pick("Turn fragmented data and manual steps into coherent workflows, with review and feedback built in.","把分散的数据与手工步骤组织成完整流程，并让核查与反馈进入实际使用。")}</p><div className="method-list">
+            <details><summary>{pick("Data engineering & RWE foundations","数据工程与 RWE 数据基础")}</summary><p>{pick("Database design, multi-source ingestion, terminology mapping, quality checks and reproducible transformations. I configure the technology around the analytical workflow.","数据库设计、多来源接入、术语映射、质量检查与可复现的数据处理；围绕分析流程配置和整合技术栈。")}</p></details>
+            <details><summary>{pick("Applied AI & software development","AI 应用与软件开发")}</summary><p>{pick("AI-assisted coding helps me implement software. Inside applications, OCR, retrieval and LLMs perform defined tasks alongside rules, exception handling and human review.","我借助 AI 辅助编程实现软件；应用内部则用 OCR、检索与 LLM 承担具体任务，并结合规则、异常处理和人工复核。")}</p></details>
+            <details><summary>{pick("Feishu bots & workflow automation","飞书机器人与流程自动化")}</summary><p>{pick("Map roles, inputs, outputs and handoffs; connect APIs, tables, approval references, synchronization and notifications to day-to-day work.","梳理角色、输入输出与交接环节，将 API、表格、审批关联、数据同步和通知接入日常协作。")}</p></details>
+          </div></article>
+          <article id="business-practice"><ShieldCheck size={30} weight="light"/><h3>{pick("Understand the practice","理解真实业务")}</h3><p>{pick("International PV makes the context tangible: local requirements, accountable partners and the quality of the underlying records.","国际药物警戒让我理解各地要求、合作伙伴职责，以及原始记录质量对实际工作的影响。")}</p><div className="method-list">
+            <details><summary>{pick("Regulations & safety agreements","法规解读与安全性协议")}</summary><p>{pick("Overseas GVP research and interpretation; PVA/SDEA clause discussion, responsibility mapping and signing follow-up. Material interpretations remain source-grounded and professionally reviewed.","海外 GVP 研究与解读；PVA/SDEA 条款沟通、责任梳理与签署跟进。关键解释保留来源，并交由相关专业人员复核。")}</p></details>
+            <details><summary>{pick("Overseas audits & partner oversight","海外审计与合作伙伴管理")}</summary><p>{pick("Audit preparation and execution, findings and corrective-action follow-up, plus international PV vendor and agent coordination.","审计准备与执行、发现记录与整改跟踪，以及国际 PV 供应商和代理商协调。")}</p></details>
+            <details><summary>{pick("Clinical & post-market data quality","临床与上市后数据质量")}</summary><p>{pick("GCP and GVP connect reliable source records, clear responsibilities and human review across the evidence lifecycle.","GCP 与 GVP 将可靠的源记录、清晰的职责和人工复核，贯穿临床及上市后的证据工作。")}</p></details>
+          </div></article>
+        </div>
+      </section>
+
+      <Journey language={language} motion={motion}/>
+
+      <section id="experience" className="experience section-wrap">
+        <div className="section-head"><h2>{pick("A path across disciplines","跨学科的成长路径")}</h2><a href={cv} className="text-link" target="_blank" rel="noreferrer">{pick("Full CV","完整简历")} <ArrowRight size={18}/></a></div>
+        <div className="experience-layout"><div className="education"><p className="eyebrow">{pick("EDUCATION","教育背景")}</p><h3>University of Miami</h3><p>{pick("MSPH · Biostatistics","MSPH · 生物统计")}<br/>2023–2025</p><h3>Rutgers University</h3><p>{pick("BA · Philosophy, Psychology & Cognitive Science","BA · 哲学、心理学与认知科学")}<br/>2017–2021</p></div><div className="experience-rows">{history.slice(0,2).map(e=><article key={e.id}><p className="experience-date">{e.period}</p><h3>{e.company}</h3><p className="experience-role">{e.role}</p><p>{e.summary}</p></article>)}<details className="earlier-roles"><summary>{pick("Earlier experience · Clinical research, medical NLP & operations","早期经历 · 临床研究、医学 NLP 与运营")}</summary>{history.slice(2).map(e=><article key={e.id}><small>{e.period}</small><h3>{e.company}</h3><p className="experience-role">{e.role}</p><p>{e.summary}</p></article>)}{translateContent(earlierFoundations,language).map(e=><article key={e.id}><small>{e.year}</small><h3>{e.title}</h3><p>{e.detail}</p></article>)}</details></div></div>
+      </section>
+
+      <section id="open-research" className="open-research section-wrap"><div className="section-head"><h2>{pick("Research you can explore","可以查看的研究")}</h2><GithubLogo size={28}/></div><div className="research-grid">{[
+        ["Hierarchical-Bayesian-Diffusion-Drift-Model-for-Working-Memory-Analysis","Bayesian models of working memory","工作记忆的贝叶斯建模","HDDM / HSSM","Public research code linking response times and accuracy to latent decision processes.","以反应时和准确率研究潜在决策过程的公开代码。"],
+        ["HIV_SETA_SEM","Relationships, made explicit","把变量关系明确表达出来","R · lavaan · SEM","Path analysis and structural equation modeling of hypothesized relationships.","利用路径分析与结构方程模型，表达并估计假设中的变量关系。"],
+        ["vaers-prototype","Exploring public safety reports","探索公开安全性报告","DuckDB · Streamlit · VAERS","A public prototype for report exploration and disproportionality summaries; separate from the current business system.","用于报告探索与不成比例分析摘要的公开原型，与当前业务系统独立。"]
+      ].map(([repo,en,zh,tags,body,bzh])=><a className="research-link" key={repo} href={"https://github.com/Unravelreggie/"+repo} target="_blank" rel="noreferrer"><small>{tags}</small><h3>{pick(en,zh)}</h3><p>{pick(body,bzh)}</p><span>{pick("Explore code","查看代码")} <ArrowRight size={18}/></span></a>)}</div><p className="small-note">{pick("Spontaneous-reporting patterns do not establish incidence or causality.","自发报告模式不能作为发生率或因果关系的结论。")}</p></section>
+
+      <section id="next" className="next-chapter section-wrap"><div><p className="eyebrow">{pick("LOOKING AHEAD","未来拓展方向")}</p><h2>{pick("The next questions I want to explore.","下一步，希望深入的问题。")}</h2></div><div><h3>{pick("Pharmacovigilance signal analysis & drug safety data analytics","药物警戒信号分析与药物安全性数据分析")}</h3><p>{pick("This is the direction I want to grow into. I hope to build on my biostatistics training, safety-data work and international PV experience to develop deeper expertise in signal analysis and the interpretation of safety evidence.","这是我希望进一步拓展的方向。我希望以生物统计训练、安全数据建设与国际 PV 实践为基础，逐步深入信号分析与安全性证据的解释。")}</p><a className="text-link" href="mailto:reggiezhang9719@gmail.com">{pick("Open to a conversation","欢迎交流")} <ArrowRight size={18}/></a></div></section>
+
+      <section id="off-hours" className="off-hours section-wrap"><div className="section-head"><h2>{pick("Beyond the work","工作之外")}</h2><p>{pick("Still learning. Still curious.","保持好奇，也保持生活的热度。")}</p></div><div className="personal-grid">{personal.map(item=>{const Icon=item.icon;return <article key={item.id}><Icon size={25} weight="light"/><h3>{item.title}</h3><p>{item.body}</p></article>;})}</div></section>
+
+      <footer id="contact" className="site-footer section-wrap"><div><a className="wordmark" href="#top"><strong>UNRAVEL</strong><span>Xiaoyuan Zhang · 张潇远</span></a><p>{pick("Curiosity, in good company.","让好奇心，遇见同行者。")}</p></div><div className="footer-links"><a href="mailto:reggiezhang9719@gmail.com">Email <ArrowRight size={17}/></a><a href="https://github.com/Unravelreggie" target="_blank" rel="noreferrer">GitHub <GithubLogo size={19}/></a><a href="https://www.linkedin.com/in/xiaoyuan-zhang-4a4999352" target="_blank" rel="noreferrer">LinkedIn <LinkedinLogo size={19}/></a><a href={cv} target="_blank" rel="noreferrer">{pick("View CV","查看简历")} <DownloadSimple size={18}/></a></div><p className="footer-note">© 2026 Xiaoyuan Zhang <a href="https://github.com/Unravelreggie/Unravelreggie.github.io" target="_blank" rel="noreferrer">{pick("Website source","网站源码")}</a></p></footer>
+    </main>
+    <ProjectDialog project={content.find(p=>p.id===selectedId)} language={language} onClose={()=>setSelectedId(null)}/>
+  </>;
 }
-const experiences = [
-  {
-    id: "sinovac",
-    period: "06/2025 – Present",
-    company: "Sinovac Biotech Group Co., Ltd.",
-    role: "International Pharmacovigilance Administrator",
-    location: "Beijing / Chengdu, China",
-    summary:
-      "Interpret GVP requirements across international markets; coordinate PVA/SDEA, vendors, audits, and periodic-report support; and contribute to workflow automation and structured data infrastructure for global vaccine safety.",
-    path:
-      "Made the real constraints behind post-market evidence visible: regulation, accountability, data quality, and cross-market coordination.",
-    tags: ["Global safety operations", "GVP quality", "Workflow systems"],
-    icon: ShieldCheck,
-  },
-  {
-    id: "miami-brain",
-    period: "08/2023 – 05/2025",
-    company: "University of Miami · BRAIN Group",
-    role: "Graduate Research Assistant",
-    location: "Miami, USA",
-    summary:
-      "Studied anxiety and executive function through behavioral tasks, fMRI, ECG, random forest, linear mixed models, and hierarchical drift diffusion modeling, while supporting data quality and research-assistant training.",
-    path:
-      "Connected questions about human decision-making to measurable, uncertainty-aware models.",
-    tags: ["Computational psychiatry", "fMRI & ECG", "HDDM / HSSM"],
-    icon: Brain,
-  },
-  {
-    id: "medchemexpress",
-    period: "01/2023 – 08/2023",
-    company: "MedChemExpress LLC",
-    role: "Operations Associate",
-    location: "New Jersey, USA",
-    summary:
-      "Managed 80+ daily cases for a biomedical research-material supplier, coordinating logistics and trade-compliance solutions among clients, agents, vendors, and researchers.",
-    path:
-      "Revealed the operational network that enables biomedical research.",
-    tags: ["Biomedical research", "Cross-border operations", "Researcher support"],
-    icon: Buildings,
-  },
-  {
-    id: "cb-payments",
-    period: "10/2022 – 12/2022",
-    company: "CB Payments LLC",
-    role: "Data Analyst Intern",
-    location: "Remote, USA",
-    summary:
-      "Applied NLP, data capture, and cleaning to prostate-cancer case reports, alongside literature and patent research on medical-language applications.",
-    path:
-      "Created a direct bridge between computational methods and disease-specific medical data.",
-    tags: ["Medical NLP", "Case reports", "Data cleaning"],
-    icon: Code,
-  },
-  {
-    id: "hopkins-medtech",
-    period: "01/2022 – 09/2022",
-    company: "Hopkins MedTech Compliance LLC",
-    role: "Clinical Research Associate",
-    location: "New Jersey, USA",
-    summary:
-      "Led a 10-person data-entry team supporting 300+ participant records daily, analyzed COVID-19 test sensitivity and specificity, and supervised FDA-aligned site execution.",
-    path:
-      "Placed me inside the clinical data-generating process, where protocol execution and data quality are inseparable.",
-    tags: ["Clinical research", "Diagnostic data", "FDA-aligned conduct"],
-    icon: Briefcase,
-  },
-  {
-    id: "deloitte",
-    period: "06/2019 – 08/2019",
-    company: "Deloitte Consulting Shanghai",
-    role: "Business Analyst Intern",
-    location: "Beijing, China",
-    summary:
-      "Used Excel-based analysis for city-level salary normalization and financial-report review, and supported the design of an international management-trainee program.",
-    path:
-      "Built an early habit of structuring ambiguous organizational questions for decisions.",
-    tags: ["Business analytics", "Excel visualization", "Cross-functional work"],
-    icon: ChartLineUp,
-  },
-];
-
-const earlierFoundations = [
-  {
-    id: "bit-research",
-    year: "2018",
-    title: "Beijing Institute of Technology · Research Assistant",
-    detail:
-      "Behavioral-science research in data cleaning, SPSS analysis, report development, and study interpretation; later connected to a co-authored multilevel study published in 2019.",
-  },
-  {
-    id: "pea-teaching",
-    year: "2018",
-    title: "PEA International Summer School · Teaching Assistant",
-    detail:
-      "Supported international-course delivery, faculty coordination, classroom organization, and student logistics at Beihang University.",
-  },
-  {
-    id: "new-oriental",
-    year: "2017",
-    title: "New Oriental · Teaching Assistant",
-    detail:
-      "Supported English learning, student progress tracking, and communication among students, parents, and teachers.",
-  },
-];
-
-const interests = [
-  {
-    id: "tennis",
-    eyebrow: "PLAY / ITERATE",
-    title: "One Year into Tennis",
-    fact: "Since summer 2025 · NTRP 3.0–3.5",
-    body:
-      "I started learning tennis in summer 2025. About a year in, I am around NTRP 3.0–3.5. There is still a long way to go—and that is part of what keeps me on court.",
-    tags: ["Started in 2025", "NTRP 3.0–3.5", "Still learning"],
-    icon: TennisBall,
-  },
-  {
-    id: "movement",
-    eyebrow: "LEARN / PRACTICE",
-    title: "Lifelong Learner",
-    fact: "Fitness · Swimming · More to learn",
-    body:
-      "Fitness and swimming are two things I am learning now, but the list is never meant to be fixed. I like beginning as a novice, practicing patiently, and getting a little better over time.",
-    tags: ["Fitness", "Swimming", "Keep learning"],
-    icon: PersonSimpleSwim,
-    secondaryIcon: Barbell,
-  },
-  {
-    id: "dogs",
-    eyebrow: "COMPANIONS / THE JOURNEY",
-    title: "Rocky & Chacha",
-    fact: "Rocky · Oct 2019 | Chacha · Mar 2022",
-    body:
-      "Rocky was born in October 2019 and Chacha in March 2022. They moved with me from New Jersey to Miami, then Beijing and Chengdu. Wherever I go next, they will be part of the journey.",
-    tags: ["New Jersey → Miami", "Beijing → Chengdu", "The journey continues"],
-    icon: Dog,
-  },
-  {
-    id: "ai-coding",
-    eyebrow: "BUILD / EXPLORE",
-    title: "Building with AI",
-    fact: "Small ideas · Working prototypes",
-    body:
-      "I also like using AI to turn small ideas into working prototypes. The fun is not only in making things faster, but in learning where human judgment still matters.",
-    tags: ["AI-assisted coding", "Small prototypes", "Human judgment"],
-    icon: Code,
-  },
-];

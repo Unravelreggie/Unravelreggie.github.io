@@ -1,8 +1,8 @@
 # UNRAVEL — Xiaoyuan Zhang
 
-Source for [my personal website](https://unravel-xiaoyuan.pages.dev/) and its [GitHub Pages mirror](https://unravelreggie.github.io/).
+Source for [my personal website](https://unravelreggie.github.io/). The [previous Cloudflare address](https://unravel-xiaoyuan.pages.dev/) has not yet received this redesign.
 
-An English-first, bilingual portfolio connecting research and analysis, data and intelligent systems, and international drug safety practice. The six-chapter constellation links education, research, statistical reasoning, business responsibilities, and software practice.
+An English-first, bilingual portfolio connecting biostatistics, data engineering, applied AI and international pharmacovigilance. Signal analysis and drug safety data analytics are presented as a future direction, separate from current experience.
 
 ## Run locally
 
@@ -16,49 +16,52 @@ npm run build
 npm run preview
 ```
 
-Vite writes static assets to `dist/client`. The build also preserves the existing Sites worker package in `dist/server` and `dist/.openai`.
+Vite writes static assets to `dist/client`. The build preserves the existing Sites worker package in `dist/server` and `dist/.openai`.
 
 ## Structure
 
-- `src/App.jsx`: experience, project case files, methods, personal interests, contact.
-- `src/EvidenceConstellation.jsx`: scroll position maps to star illumination, growing connections and reversible camera transitions.
-- `src/Expertise.jsx`: three reader perspectives, six capabilities, AI/workflow and business practice.
-- `src/OpenResearch.jsx`: public research repositories and capabilities connected to project cases.
-- `src/site-language.js`: translations for the main portfolio.
-- `public/`: public assets and bilingual CVs. Original CV URL remains available.
-- `worker/` and `tests/`: the existing Sites static-serving adapter and its contract tests.
+- `src/App.jsx`: identity, selected projects, capability disclosures, experience, public research, future direction, interests and contact.
+- `src/Journey.jsx`: four scroll-driven chapters with CSS perspective, Z-axis camera movement, illuminated chapter controls and reading pauses.
+- `src/daylight.css`: white/sage editorial design, responsive layout and 3D scene styles.
+- `src/portfolio-data.js`: existing project responsibilities, methods, career history and personal context.
+- `src/site-language.js`: translations for retained portfolio records.
+- `public/assets`: generated conceptual illustrations and bilingual CVs.
+- `worker/` and `tests/`: existing Sites static-serving adapter and contract tests.
 
-The star scene follows native scrolling; it does not intercept the wheel. Narrow or short screens and reduced-motion preferences receive the full static story. Chapter navigation and direct links allow readers to skip the animation. CSS scroll/view timelines enhance supported browsers, with a JavaScript progress fallback.
+Native scrolling drives the camera through separate depth planes. It does not intercept wheel or touch input. The hero uses a separate background, analytical illustration and annotation at different depths. The story follows the projects and capabilities; its navigation can jump directly to each chapter or skip to experience. A motion toggle and reduced-motion preferences provide the full static story.
+
+Illustrations are conceptual and do not present real project findings. Current project notes retain ownership, collaboration, maturity and validation boundaries. Bayesian, longitudinal and machine-learning methods are described as statistical capabilities; data engineering, software development, Feishu automation and international PV business practice remain distinct.
 
 ## Publish
 
-Source lives on `main`; the static website lives on `gh-pages`. GitHub Pages publishes from **gh-pages / (root)**. Builds run on the development host.
+All source development, project builds and Git operations take place on Mac mini. Source lives on `main`; built assets live on `gh-pages`. GitHub Pages publishes from **gh-pages / (root)**.
 
-After committing the intended source, publish with:
+After committing the intended source:
 
 ```sh
 npm run publish:github
 ```
 
-This runs the worker tests and production build, verifies the remote and clean source state, then commits only the built site to `gh-pages` with a normal, non-forced push. `build-info.json` records the exact source commit. GitHub CLI must be authenticated with repository write access. The temporary artifact checkout stays in ignored `work/`.
+The command runs worker tests and a production build, verifies the expected remote and clean source state, then commits built assets to `gh-pages` with a normal, non-forced push. `build-info.json` records the exact source commit. Temporary artifact worktrees stay in ignored `work/`. Verify the actual Pages build and public resources after publication.
 
 To roll back, publish the previously verified static artifact as a new `gh-pages` commit. Do not switch Pages back to source-only `main`.
 
-For the existing Cloudflare Pages project, authenticate Wrangler on the development host, then:
+Cloudflare remains a separate deferred deployment. Once Wrangler login is restored on Mac mini:
 
 ```sh
-npm run build:cloudflare
-npx wrangler pages deploy dist/client --project-name unravel-xiaoyuan --branch main
+npm run deploy:cloudflare
 ```
 
-Cloudflare credentials are not included. GitHub publication and Cloudflare deployment are separate; verify each public URL after release.
+No credentials are included in this repository.
 
 ## Content scope
 
-Project summaries describe individual contributions, collaboration, validation and current maturity. Source reports are distinguished from incidence or causal conclusions. This repository contains no company systems, patient data, supplier records or private integrations. Public research repositories are linked as independent examples.
+Public descriptions exclude confidential products, patient data, supplier records, infrastructure and unpublished findings. Spontaneous-reporting patterns are not incidence or causal conclusions. Independent public research/prototype repositories are clearly distinguished from current business systems.
 
-The GitHub profile README is maintained separately in [Unravelreggie/Unravelreggie](https://github.com/Unravelreggie/Unravelreggie).
+The profile README is maintained in [Unravelreggie/Unravelreggie](https://github.com/Unravelreggie/Unravelreggie).
 
-## September 2026 update
+## September 15, 2026 redesign
 
-Rebuilt the constellation as six scroll-controlled chapters; added three reader perspectives, six capability areas, cross-capability project tags, public research links, and explicit AI/workflow and international PV business cases. Desktop and 320/430 px mobile layouts, bilingual controls, capability filtering, project-dialog keyboard handling, and the four existing worker tests were checked. Corrected the Miami research-assistant end date in the inherited public English CVs. Cloudflare deployment is deferred pending account login.
+The selected first design replaces the dark archival background with daylight, pale sage and clear evergreen typography. The name, current positioning and primary actions lead; three projects immediately follow the hero. Long capability inventories became expandable explanations, and the story was shortened from six long scenes to four chapters with reading pauses.
+
+Current validation and release evidence is recorded in `design-qa.md`. Implementation, local validation, GitHub publication and Cloudflare deployment are separate states.

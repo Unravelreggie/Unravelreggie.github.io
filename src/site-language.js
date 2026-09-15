@@ -1,4 +1,11 @@
 const zh = {
+  "HARMONIZE \u2192 EXPLORE": "\u6807\u51c6\u5316 \u2192 \u63a2\u7d22",
+  "Cross-Regulatory Post-Market Safety Data Foundation": "\u8de8\u76d1\u7ba1\u5e02\u573a\u4e0a\u5e02\u540e\u5b89\u5168\u6570\u636e\u57fa\u7840",
+  "A harmonized adverse-event data foundation spanning VAERS, CVAR, JADER and EudraVigilance, built for reproducible descriptive analysis and future signal-review work.": "\u5c06 VAERS\u3001CVAR\u3001JADER \u4e0e EudraVigilance \u7ec4\u7ec7\u4e3a\u6807\u51c6\u5316\u7684\u4e0d\u826f\u4e8b\u4ef6\u6570\u636e\u57fa\u7840\uff0c\u7528\u4e8e\u53ef\u590d\u73b0\u7684\u63cf\u8ff0\u6027\u5206\u6790\uff0c\u5e76\u4e3a\u540e\u7eed\u4fe1\u53f7\u5ba1\u9605\u5de5\u4f5c\u505a\u51c6\u5907\u3002",
+  "Descriptive analysis": "\u63cf\u8ff0\u6027\u5206\u6790",
+  "How can heterogeneous spontaneous-reporting systems be aligned to compare reporting patterns and prepare data for further safety analysis?": "\u5982\u4f55\u6574\u5408\u5f02\u6784\u7684\u81ea\u53d1\u62a5\u544a\u7cfb\u7edf\uff0c\u6bd4\u8f83\u62a5\u544a\u6a21\u5f0f\uff0c\u5e76\u4e3a\u8fdb\u4e00\u6b65\u7684\u5b89\u5168\u6027\u5206\u6790\u51c6\u5907\u53ef\u9760\u6570\u636e\uff1f",
+  "Full-source ingestion, shared field definitions, terminology and product mappings, provenance tracking, reproducible transformations, quality checks and cross-source descriptive views.": "\u591a\u6765\u6e90\u6570\u636e\u63a5\u5165\u3001\u7edf\u4e00\u5b57\u6bb5\u5b9a\u4e49\u3001\u672f\u8bed\u4e0e\u4ea7\u54c1\u6620\u5c04\u3001\u6765\u6e90\u8ffd\u8e2a\u3001\u53ef\u590d\u73b0\u7684\u6570\u636e\u5904\u7406\u3001\u8d28\u91cf\u68c0\u67e5\u53ca\u8de8\u6765\u6e90\u63cf\u8ff0\u6027\u89c6\u56fe\u3002",
+  "I designed and built the database, harmonization workflow, analytical layer and visualization structure, and maintain the data foundation for ongoing analytical work.": "\u6211\u8bbe\u8ba1\u5e76\u5efa\u8bbe\u6570\u636e\u5e93\u3001\u6807\u51c6\u5316\u5904\u7406\u6d41\u7a0b\u3001\u5206\u6790\u5c42\u4e0e\u53ef\u89c6\u5316\u7ed3\u6784\uff0c\u5e76\u6301\u7eed\u7ef4\u62a4\u540e\u7eed\u5206\u6790\u6240\u9700\u7684\u6570\u636e\u57fa\u7840\u3002",
 "Expertise": "能力结构",
 "Follow the story": "展开我的故事",
 "I connect statistical research, data and AI engineering, and international pharmacovigilance to build evidence and tools for real clinical and safety workflows.": "我连接统计研究、数据与 AI 工程以及国际药物警戒，为实际临床与安全性流程构建证据和工具。",
